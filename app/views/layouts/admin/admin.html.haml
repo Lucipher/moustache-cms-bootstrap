@@ -3,17 +3,28 @@
   %head{:lang => "en"}
     %meta{:charset => "UTF-8"}
     %title= "#{@current_site.name.titleize} - #{yield :title}"
-    = stylesheet_link_tag "application"
+    = stylesheet_link_tag "application_bootstrap"
     = csrf_meta_tag
-  %body{:class => body_id_set}
+    :css
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+  %body{:class => [body_id_set, admin_theme]}
     #wrapper
-      #header
-        %h1#site
-          = link_to "#{@current_site.name.titleize} Site", "/" 
-        = render :partial => "layouts/admin/welcome"
-      #main
-        = render :partial => "layouts/admin/nav"
-        #content
-          = yield
+      .navbar.navbar-fixed-top
+        #header.navbar-inner
+          .container
+            %a.btn.btn-navbar{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
+              %span.icon-bar
+              %span.icon-bar
+              %span.icon-bar
+            = link_to "#{@current_site.name.titleize} Site", "/", :id => "site", :class => "brand"
+            .nav-collapse
+              = render :partial => "layouts/admin/welcome"
+      .container
+        #main.row
+          = render :partial => "layouts/admin/nav"
+          #content.span9
+            = yield
     #footer
-    = render :partial => 'layouts/admin/js_footer'
+    = render :partial => 'layouts/admin/js_footer_bootstrap'

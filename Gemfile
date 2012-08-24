@@ -11,6 +11,8 @@ gem "coffee-rails", "~> 3.2.1"
 gem "jquery-rails"
 gem "haml-rails", "~> 0.3"
 
+gem 'anjlab-bootstrap-rails', '>= 2.1', :require => 'bootstrap-rails'
+
 # mongoid
 gem "mongoid", "~> 2.4"
 gem "bson_ext", "~> 1.5"    

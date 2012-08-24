@@ -34,7 +34,11 @@ module ApplicationHelper
     when "current_site"
       name 
     end
-  end    
+  end
+
+  def admin_theme
+    "bootstrap"
+  end
 
   def hash_to_open_struct(hash)
     OpenStruct.new(hash)

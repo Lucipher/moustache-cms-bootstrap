@@ -1,27 +1,47 @@
-#nav
-  %ul
-    %li 
+#nav.span3
+  %ul.nav.nav-list.bs-docs-sidenav.affix-top
+    %li
       %h3 Site Management 
     %li#pages
-      = link_to "Pages", [:admin, :pages]
+      = link_to [:admin, :pages] do
+        %i.icon-chevron-right
+        Pages
     %li#articles
-      = link_to "Articles", [:admin, :article_collections]
+      = link_to [:admin, :article_collections] do
+        %i.icon-chevron-right
+        Articles
     %li#authors
-      = link_to "Authors", [:admin, :authors]
+      = link_to [:admin, :authors] do
+        %i.icon-chevron-right
+        Authors
     %li#site_assets
-      = link_to "Site Assets", [:admin, :asset_collections]
+      = link_to [:admin, :asset_collections] do
+        %i.icon-chevron-right
+        Site Assets
     %li#snippets
-      = link_to "Snippets", [:admin, :snippets]
+      = link_to [:admin, :snippets] do
+        %i.icon-chevron-right
+        Snippets
     %li#layouts 
-      = link_to "Layouts", [:admin, :layouts]
+      = link_to [:admin, :layouts] do
+        %i.icon-chevron-right
+        Layouts
     %li#theme_assets
-      = link_to "Theme Assets", [:admin, :theme_collections]
+      = link_to [:admin, :theme_collections] do
+        %i.icon-chevron-right
+        Theme Assets
     - if current_admin_user.role?('admin')
       %li#users
-        = link_to "User Profiles", [:admin, :users]
+        = link_to [:admin, :users] do
+          %i.icon-chevron-right
+          User Profiles
     - else
       %li#users
-        = link_to "Your Profile", [:edit, :admin, @current_admin_user]
+        = link_to [:edit, :admin, @current_admin_user] do
+          %i.icon-chevron-right
+          Your Profile
     - if current_admin_user.role?('admin')
       %li#current_site
-        = link_to "Site Settings", [:edit, :admin, @current_site]
+        = link_to [:edit, :admin, @current_site] do
+          %i.icon-chevron-right
+          Site Settings
