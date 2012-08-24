@@ -2,12 +2,16 @@
 %html
   %head{:charset => "UTF-8"}
     %title= "#{@current_site.name.titleize} - #{yield :title}"|| "MoustacheCMS"
-    = stylesheet_link_tag "login"
+    = stylesheet_link_tag "application_bootstrap"
     = javascript_include_tag "login_focus"
     = csrf_meta_tag
+    :css
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
   %body
   - flash.each do |name, msg|
     - unless name == :timedout
       = content_tag :div, msg, :id => "flash_#{name}"
-  #wrapper
+  #wrapper.container
     = yield
