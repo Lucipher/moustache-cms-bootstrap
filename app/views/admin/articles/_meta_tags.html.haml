@@ -1,16 +1,22 @@
-%li#meta_tags_fields
-  = foldable_fieldset 'Article Meta Tags', :id => 'meta_tags_fieldset' do
-    %div.fields_wrap
-      %div.spinner_wrapper
-        = image_tag 'ajax-loader.gif', :class => 'spinner hidden'
-      %ol{ :id => 'article_meta_tags', :class => 'form_fields meta_tags'} 
-        = f.fields_for :meta_tags do |builder|
-          %li{:id => meta_tag_id(builder.object), :class => 'inline meta_tag'}  
-            = builder.label :name
-            = builder.text_field :name
-            = builder.label :content
-            = builder.text_field :content
-            = manage_meta_tag @article, builder.object
-          = builder_hidden_attribute(builder, @article)
-        %li#add_meta_tag
-          = add_meta_tag 'Save article first to add custom meta tags', @article, [:new, :admin, @article_collection, @article, :meta_tag]
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#meta_tags_fields"}} 
+        Article Meta Tags
+    #meta_tags_fields.accordion-body.collapse
+      .accordion-inner
+        %div.spinner_wrapper
+          = image_tag 'ajax-loader.gif', :class => 'spinner hidden'
+        %div{ :id => 'article_meta_tags', :class => 'form_fields meta_tags'} 
+          = f.fields_for :meta_tags do |builder|
+            %div{:id => meta_tag_id(builder.object), :class => 'inline meta_tag row'}
+              .span3
+                = builder.label :name
+                = builder.text_field :name
+              .span3  
+                = builder.label :content
+                = builder.text_field :content
+              = manage_meta_tag @article, builder.object
+            = builder_hidden_attribute(builder, @article)
+          %div#add_meta_tag.span8
+            = add_meta_tag 'Save article first to add custom meta tags', @article, [:new, :admin, @article_collection, @article, :meta_tag]

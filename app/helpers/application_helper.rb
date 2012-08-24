@@ -141,7 +141,7 @@ module ApplicationHelper
 
   def builder_hidden_attribute(builder, object)
     unless object.new_record?
-      content_tag :li do
+      content_tag :div do
         builder.hidden_field :id
       end
     end

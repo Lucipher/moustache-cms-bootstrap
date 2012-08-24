@@ -6,6 +6,33 @@
   }
 }
 
+// Ace
+
+#asset_content, .page_part_content, #article_content, #article_subheading_content {
+  margin: 0 0 10px;
+  padding: 0;
+  position: relative !important;
+  height: 41.667em;
+  // width: 100%;
+  top: 0;
+  left: 0;
+}
+#article_subheading_content {
+height: 12.5em;
+}
+
+// Datetime select
+
+[id^="article_date_"] {
+  width: 50px;
+}
+#article_date_1i {
+  width: 70px;
+}
+#article_date_2i {
+  width: 110px;
+}
+
 // Sorting
 
 #pages_list ol {
