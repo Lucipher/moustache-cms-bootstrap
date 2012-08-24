@@ -9,7 +9,13 @@
   @return ($target_px / $context_px) * 100%;
 }
 
-
+.visuallyhidden { 
+  position: absolute; 
+  overflow: hidden; 
+  clip: rect(0 0 0 0); 
+  height: 1px; width: 1px; 
+  margin: -1px; padding: 0; border: 0; 
+}
 .bootstrap_hidden {
 	display: none;
 	visibility: hidden;

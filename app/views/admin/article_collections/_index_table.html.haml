@@ -1,6 +1,8 @@
-%table{:class => "info article_collections two_col"}
-  %tr
-    %th Article Collection Name
-    %th Delete Article Collection
+%table.table.table-hover
+  %thead
+    %tr
+      %th Article Collection Name
+      %th.visuallyhidden Delete Article Collection
+  %tbody
   = render @article_collections.asc(:name)
  

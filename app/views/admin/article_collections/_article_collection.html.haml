@@ -1,5 +1,5 @@
 - if can? :edit, article_collection
-  %tr{:id => "ac_#{article_collection.name}", :class => "#{cycle('even', 'odd')}"}
+  %tr{:id => "ac_#{article_collection.name}"}
     %td.name= link_to article_collection.name, [:admin, article_collection]
     - if can? :destroy, article_collection
-      %td.delete= link_to "Delete", [:admin, article_collection], :method => :delete, :data => { :confirm => "Are you sure you want to delete the article collection #{article_collection.name}?" }, :class => "delete"
+      %td.delete= link_to "Delete", [:admin, article_collection], :method => :delete, :data => { :confirm => "Are you sure you want to delete the article collection #{article_collection.name}?" }, :class => "delete btn btn-mini btn-danger"

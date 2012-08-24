@@ -16,6 +16,8 @@
 //= require nested/jquery.ui.nestedSortable
 //= require_self
 
+//= require twitter/bootstrap
+
 $(document).ready(function() {
   $('#flash_notice_wrapper').delay(3000).fadeToggle('slow', 'linear', function() {
     $(this).remove()
@@ -54,5 +56,11 @@ $(document).ready(function() {
   $('.logout').on('click', function() {
     sessionStorage.clear();
   });
+
+  // Sortable
+  $('#pages_list > ol.pages').addClass('nav nav-tabs nav-stacked')
+  $('ol.pages li em.sortable_list').html('<i class="icon-align-justify"></i>');
+  $('.add_child_page').parent().prepend('<i class="icon-plus"></i>');
+  $('.delete_page').parent().prepend('<i class="icon-minus"></i>')
 
 });

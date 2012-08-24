@@ -1,16 +1,20 @@
 - if can? :create, Article
-  %div{:id => "new_article", :class => "actions" }
-    %ul.submenu
-      %li.top_menu
-        Actions<span class="action_arrow"></span>
-        %ul 
-          - if can? :create, @article_collection
-            %li
-              = link_to "New Article", [:new, :admin, @article_collection, :article]
-          - if can? :update, @article_collection
-            %li
-              = link_to "Edit Collection Props", [:edit, :admin, @article_collection]
-          - if can? :destroy, @article_collection
-            %li
-              = link_to "Delete Collection", [:admin, @article_collection], :data => { :confirm => "Are you sure you want to delete the article collection #{@article_collection.name}" }, :method => :delete
- 
+  %div{:id => "new_article", :class => "actions pull-right" }
+    .btn-group
+      %a.btn.dropdown-toggle{:data => {:toggle => "dropdown", :target => "#"}}
+        Actions 
+        <span class="caret"></span>
+      %ul.dropdown-menu(role="menu" aria-labelledby="dMenu")
+        - if can? :create, @article_collection
+          %li
+            = link_to "New Article", [:new, :admin, @article_collection, :article]
+        - if can? :update, @article_collection
+          %li
+            = link_to "Edit Collection Props", [:edit, :admin, @article_collection]
+        - if can? :destroy, @article_collection
+          %li
+            = link_to "Delete Collection", [:admin, @article_collection], :data => { :confirm => "Are you sure you want to delete the article collection #{@article_collection.name}" }, :method => :delete
+:javascript
+  $(document).ready(function() {
+    $('h2').append('.actions');
+  });

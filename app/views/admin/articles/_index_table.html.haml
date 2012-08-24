@@ -1,8 +1,10 @@
-%table{:class => "info articles", :class => "articles info #{cycle('even', 'odd')}"}
-  %tr
-    %th Title
-    %th Last Updated At 
-    %th Last Updated By
-    %th Status
-    %th Delete Article
+%table.table.table-hover
+  %thead
+    %tr
+      %th Title
+      %th Last Updated At 
+      %th Last Updated By
+      %th Status
+      %th.visuallyhidden Delete Article
+  %tbody
   = render @articles
