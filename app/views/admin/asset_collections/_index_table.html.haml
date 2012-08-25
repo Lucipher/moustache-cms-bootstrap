@@ -1,6 +1,7 @@
-%table{:class => "info asset_collections two_col"}
-  %tr
-    %th Asset Collection Name
-    %th Delete Site Asset Collection
-  = render @asset_collections.asc(:name)
-   
+%table.asset_collections.table.table-hover
+  %thead
+    %tr
+      %th Asset Collection Name
+      %th.visuallyhidden Delete Site Asset Collection
+  %tbody
+    = render @asset_collections.asc(:name)

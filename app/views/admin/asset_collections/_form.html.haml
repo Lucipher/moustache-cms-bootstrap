@@ -1,14 +1,5 @@
 = form_for([:admin, @asset_collection], :html => {:class => "site_prop", :autocomplete => "off" }) do |f|
   = render :partial => "shared/error_messages", 
-           :locals => { :target => @asset_collection }    
-  = foldable_fieldset 'General' do
-    %ol.form_fields
-      %li
-        = f.label :name
-        = f.text_field :name 
-      %li
-        = f.submit button_label, :class => "submit"
-        - if @asset_collection.new_record?
-          = link_to "Cancel", [:admin, :asset_collections], :class => "cancel"
-        - else
-          = link_to "Cancel", [:admin, @asset_collection], :class => "cancel"
+           :locals => { :target => @asset_collection }
+           
+  = render :partial => 'form_general', :locals => { :f => f, :button_label => button_label }

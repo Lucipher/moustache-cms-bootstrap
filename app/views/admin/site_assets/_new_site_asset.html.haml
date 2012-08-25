@@ -1,7 +1,6 @@
-%li
-  #uploader
-    = new_site_asset.label :name, "Name<abbr title='required' class='required'>*</abbr>".html_safe
-    = new_site_asset.text_field :name
-    = new_site_asset.label :asset, "Asset Source<abbr title='required' class='required'>*</abbr>".html_safe
-    = new_site_asset.file_field :asset, :class => "file_field"
-    = new_site_asset.hidden_field :asset_cache
+#uploader
+  = new_site_asset.label :name, "Name<abbr title='required' class='required'>*</abbr>".html_safe
+  = new_site_asset.text_field :name
+  = new_site_asset.label :asset, "Asset Source<abbr title='required' class='required'>*</abbr>".html_safe
+  = new_site_asset.file_field :asset, :class => "file_field"
+  = new_site_asset.hidden_field :asset_cache

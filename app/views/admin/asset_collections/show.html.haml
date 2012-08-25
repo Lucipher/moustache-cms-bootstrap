@@ -7,5 +7,5 @@
     = link_to "&laquo; Site Asset Collections".html_safe, [:admin, :asset_collections]
   
   %div{ :id => "collection_#{@asset_collection.name}" }
-    %ul{ :id => 'assets', :class => 'show_asset_collection' }
+    %ul{ :id => 'assets', :class => 'show_asset_collection thumbnails' }
       = list_site_assets

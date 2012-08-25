@@ -33,6 +33,152 @@ height: 12.5em;
   width: 110px;
 }
 
+// Assets
+
+.thumbnail {
+  .image {
+    height: 100px;
+    overflow: hidden;
+  }
+  .figcaption {
+    min-height: 40px;
+  }
+}
+
+// Upload
+/* 
+   Plupload
+------------------------------------------------------------------- */
+
+.plupload_button {
+  @extend .btn;
+}
+
+a.plupload_start {
+  @extend .btn-success;
+}
+
+.plupload_disabled, a.plupload_disabled:hover {
+  @extend .btn.disabled;
+}
+.plupload_wrapper {
+  width: 100%;
+}
+
+.plupload_container {
+  /*-moz-border-radius: 5px;*/
+}
+
+.plupload_container input {
+  border: 1px solid red;
+  width: 98%;
+}
+.plupload_header_title {
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  display: block;
+}
+.plupload_header_text {
+  display: block; 
+  margin-bottom: 12px;
+}
+.plupload_content{
+  @extend .well;
+  padding: 0;
+}
+.plupload_filelist {
+  margin: 0;
+  list-style: none;
+}
+
+.plupload_scroll .plupload_filelist {
+  height: 185px;
+  overflow-y: auto;
+}
+
+.plupload_filelist li{
+  padding: 10px 8px;
+  margin-left:0px;
+}
+.plupload_filelist li:nth-child(odd) {background: $grayLighter;}
+
+.plupload_filelist_header{
+  padding: 8px 0px 8px 0px;
+  font-weight: bold;
+  border-bottom: 1px solid;
+}.plupload_filelist_header .plupload_file_name{
+  float:left;
+}.plupload_filelist_header .plupload_file_name:first-child{
+  padding-left: 10px;
+}.plupload_filelist_footer {
+  border-top: 1px solid; vertical-align: middle; padding: 12px 0px 12px 0px;
+}
+.plupload_filelist_footer .plupload_button{margin-right: 15px;}
+.plupload_buttons{float:left;padding-left: 10px;}
+.plupload_file_size, .plupload_file_status, .plupload_progress {
+  float: right;
+  width: 80px;
+}
+.plupload_progress {
+  width: 250px;
+}
+.plupload_file_size, .plupload_file_status, .plupload_file_action {text-align: right;}
+
+.plupload_filelist .plupload_file_name {width: 205px;float:left;}
+
+
+.plupload_file_action {
+  float: right; width: 16px;  height: 16px; margin-left: 15px;
+}
+
+.plupload_file_action * {
+  display: none;  width: 16px;  height: 16px;
+}
+
+li.plupload_uploading {background: $linkColor;}
+li.plupload_done {color: $grayLight;}
+
+li.plupload_delete a {
+  @extend [class*=" icon-"];
+  @extend .icon-trash;
+}
+
+li.plupload_failed a {
+  @extend [class*=" icon-"];
+  @extend .icon-exclamation-sign;
+}
+
+li.plupload_done a {
+  @extend [class*=" icon-"];
+  @extend .icon-ok;
+}
+
+.plupload_progress, .plupload_upload_status {
+  display: none;  float:left; padding-left:10px;
+}
+
+.plupload_progress_container {
+  margin-top: 3px; @extend .progress; @extend .progress-striped; @extend .active;
+}
+.plupload_progress_bar {
+  width: 0px; @extend .bar;
+}.plupload_scroll .plupload_filelist_header .plupload_file_action, .plupload_scroll .plupload_filelist_footer .plupload_file_action {
+  margin-right: 17px;
+}
+/* Floats */
+.plupload_clear,.plupload_clearer {clear: both;}
+.plupload_clearer, .plupload_progress_bar {
+  display: block;
+  font-size: 0;
+  line-height: 0; 
+}li.plupload_droptext {
+  background: transparent;
+  text-align: center;
+  vertical-align: middle;
+  border: 0;
+  line-height: 165px;
+}
+
 // Sorting
 
 #pages_list ol {

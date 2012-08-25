@@ -1,16 +1,21 @@
-= foldable_fieldset 'General' do
-  %ol.form_fields
-    - if @site_asset.new_record?
-      = render :partial => 'new_site_asset', :object => f
-    - else 
-      %li
-        = f.label :name, "Name"
-        = f.text_field :name
-      %li
-        = f.label :tags
-        = f.text_field :tags
-      = render :partial => 'site_asset'
-    %li#submit_fields
-      = f.submit button_label, :class => "submit"
-      = link_to "Cancel", [:admin, @asset_collection], :class => "cancel"
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
+        General
+    #general_fields.accordion-body.collapse.in
+      .accordion-inner
+        - if @site_asset.new_record?
+          = render :partial => 'new_site_asset', :object => f
+        - else 
+          = f.label :name, "Name"
+          = f.text_field :name
+
+          = f.label :tags
+          = f.text_field :tags
+
+          = render :partial => 'site_asset'
+        #submit_fields.form-actions
+          = f.submit button_label, :class => "submit btn btn-success"
+          = link_to "Cancel", [:admin, @asset_collection], :class => "cancel"
 
