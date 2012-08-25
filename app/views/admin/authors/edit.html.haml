@@ -7,3 +7,8 @@
 
   = render :partial => 'form',  
            :locals => { :button_label => 'Update Author' }
+
+:javascript
+  $(document).ready(function() {
+    $('h2').append('#delete_author');
+  });

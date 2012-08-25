@@ -2,7 +2,7 @@
 %html
   %head{:charset => "UTF-8"}
     %title= "#{@current_site.name.titleize} - #{yield :title}"|| "MoustacheCMS"
-    = stylesheet_link_tag "application_bootstrap"
+    = stylesheet_link_tag "application"
     = javascript_include_tag "login_focus"
     = csrf_meta_tag
     :css

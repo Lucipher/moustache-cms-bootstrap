@@ -1,5 +1,7 @@
-%table{:class => "info authors two_col"}
-  %tr
-    %th Name
-    %th Delete Author
-  = render @authors.asc(:name)
+%table.authors.table.table-hover
+  %thead
+    %tr
+      %th Name
+      %th.visuallyhidden Delete Author
+  %tbody
+    = render @authors.asc(:name)
