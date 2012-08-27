@@ -6,7 +6,7 @@ module Admin::CustomFieldsHelper
         content_tag :i, message
       end
     else
-      link_to "Add Custom Field", path, :remote => true
+      link_to "Add Custom Field", path, :remote => true, :class => "btn btn-inverse"
     end
   end
 

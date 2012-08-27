@@ -1,6 +1,8 @@
 %div{:id => "css_files", :class => "theme_assets"} 
-  %table{:class => "info theme_asset_css two_col"}
-    %tr
-      %th CSS Theme Assets
-      %th
-    = render :partial => 'css_file', :collection => @css_files
+  %table.table.table-hover.theme_asset_css
+    %thead
+      %tr
+        %th CSS Theme Assets
+        %th.visuallyhidden Delete Css Theme Asset
+    %tbody
+      = render :partial => 'css_file', :collection => @css_files

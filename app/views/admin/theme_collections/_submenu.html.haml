@@ -1,16 +1,16 @@
 - if can? :create, SiteAsset
-  %div{:id => "new_site_asset", :class => "actions" }
-    %ul.submenu
-      %li.top_menu
-        Actions<span class="action_arrow"></span>
-        %ul 
-          - if can? :create, @theme_collection
-            %li
-              = link_to "New Assets", [:new, :admin, @theme_collection, :theme_asset]
-          - if can? :update, @theme_collection
-            %li
-              = link_to "Edit Collection Props", [:edit, :admin, @theme_collection]
-          - if can? :destroy, @theme_collection
-            %li
-              = link_to "Delete Collection", [:admin, @theme_collection], :data => { :confirm => "Are you sure you want to delete the theme #{@theme_collection.name}", :method => :delete }
- 
+  %div{:id => "new_site_asset", :class => "actions pull-right" }
+    .btn-group
+      %a.btn.dropdown-toggle{:data => {:toggle => "dropdown", :target => "#"}}
+        Actions 
+        <span class="caret"></span>
+      %ul.dropdown-menu(role="menu" aria-labelledby="dMenu")
+        - if can? :create, @theme_collection
+          %li
+            = link_to "New Assets", [:new, :admin, @theme_collection, :theme_asset]
+        - if can? :update, @theme_collection
+          %li
+            = link_to "Edit Collection Props", [:edit, :admin, @theme_collection]
+        - if can? :destroy, @theme_collection
+          %li
+            = link_to "Delete Collection", [:admin, @theme_collection], :data => { :confirm => "Are you sure you want to delete the theme #{@theme_collection.name}", :method => :delete }

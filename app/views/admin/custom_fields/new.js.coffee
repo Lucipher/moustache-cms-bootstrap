@@ -4,10 +4,10 @@ replaceCharWith = (str, oldChar, newChar) ->
   newStr = str.substring(0, index) + newChar + str.substring(index + 1)
  
 
-if $('li#add_custom_field').length
-  $('li#add_custom_field').before('<%= escape_javascript(render(:partial => @custom_field)) %>').fadeIn()
+if $('#add_custom_field').length
+  $('#add_custom_field').before('<%= escape_javascript(render(:partial => @custom_field)) %>').fadeIn()
 
-  custom_fields = $('ol.custom_fields').find('li.custom_field')
+  custom_fields = $('.custom_fields').find('.custom_field')
 
   if custom_fields.length > 0
     customFieldCount = custom_fields.length - 1

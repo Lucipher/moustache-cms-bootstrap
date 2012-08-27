@@ -1,7 +1,9 @@
 - reset_cycle("table_list")
 %div{:id => "other_files", :class => "theme_assets"} 
-  %table{:class => "info theme_asset_other_files two_col"}
-    %tr
-      %th Other Theme Assets 
-      %th
-    = render :partial => 'other_file', :collection => @other_files
+  %table.table.table-hover.theme_asset_other_files
+    %thead
+      %tr
+        %th Other Theme Assets 
+        %th.visuallyhidden Delete Other Theme Asset
+    %tbody
+      = render :partial => 'other_file', :collection => @other_files

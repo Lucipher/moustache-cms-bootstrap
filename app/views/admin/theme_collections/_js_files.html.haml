@@ -1,7 +1,9 @@
 - reset_cycle("table_list")
 %div{:id => "js_files", :class => "theme_assets"} 
-  %table{:class => "info theme_asset_js two_col"}
-    %tr
-      %th JavaScript Theme Assets 
-      %th
-    = render :partial => 'js_file', :collection => @js_files
+  %table.table.table-hover.theme_asset_js
+    %thead
+      %tr
+        %th JavaScript Theme Assets 
+        %th.visuallyhidden Delete Javascript Theme Asset
+    %tbody
+      = render :partial => 'js_file', :collection => @js_files

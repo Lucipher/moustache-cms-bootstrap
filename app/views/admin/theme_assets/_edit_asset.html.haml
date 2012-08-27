@@ -1,13 +1,15 @@
-%li#theme_asset_file_fields
-  = foldable_fieldset 'File' do
-    %div.fields_wrap
-      %ol.form_fields
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#theme_asset_file_fields"}} 
+        File
+    #theme_asset_file_fields.accordion-body.collapse.in
+      .accordion-inner
         = edit_asset_field
-        %li
-          %h5 Asset 
-          %span= "#{@theme_asset.asset.file.filename} is available"
-          = link_to 'here', "#{@theme_asset.asset.url}"
-        %li
-          %h5 Asset with MD5 Hash  
-          %span= "#{@theme_asset.filename_md5} is available"
-          = link_to 'here', "#{@theme_asset.url_md5}"
+        %h5 Asset 
+        %span= "#{@theme_asset.asset.file.filename} is available"
+        = link_to 'here', "#{@theme_asset.asset.url}"
+              
+        %h5 Asset with MD5 Hash  
+        %span= "#{@theme_asset.filename_md5} is available"
+        = link_to 'here', "#{@theme_asset.url_md5}"
