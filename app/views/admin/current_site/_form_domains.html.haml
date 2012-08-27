@@ -1,9 +1,13 @@
-%li
-  = foldable_fieldset 'Domain', :id => 'domains_fieldset' do
-    %div.fields_wrap
-      %div.spinner_wrapper
-        = image_tag 'ajax-loader.gif', :class => 'spinner hidden'
-      = f.label :subdomain
-      = f.text_field :subdomain
-      %span &#46; #{@current_site.default_domain}
-      = render :partial => 'admin/current_site/domains'
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#domains_fieldset"}} 
+        Domain
+    #domains_fieldset.accordion-body.collapse.in
+      .accordion-inner
+        %div.spinner_wrapper
+          = image_tag 'ajax-loader.gif', :class => 'spinner hidden'
+        = f.label :subdomain
+        = f.text_field :subdomain
+        %span &#46; #{@current_site.default_domain}
+        = render :partial => 'admin/current_site/domains'

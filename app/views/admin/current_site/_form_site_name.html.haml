@@ -1,8 +1,10 @@
-%li
-  %p Manage other #{link_to 'Sites', admin_sites_path}
-%li
-  = foldable_fieldset 'Site Name', :id => 'current_site_name' do
-    %div.fields_wrap
-      = f.label :name
-      = f.text_field :name
-
+%p Manage other #{link_to 'Sites', admin_sites_path}
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#current_site_hame"}} 
+        Site Name
+    #current_site_hame.accordion-body.collapse.in
+      .accordion-inner
+        = f.label :name
+        = f.text_field :name

@@ -1,7 +1,7 @@
 - unless @current_site.domain_names.empty?
   %h5 The current site is also accessible from the following domains:
-  %ol{:class => 'form_fields domains_list'} 
+  .form_fields.domains_list
     - @current_site.domain_names.each.with_index do |domain, index|
       = can_manage_domain?(domain, index)  
-    %li#add_domain
+    #add_domain
       = link_to "Add Domain Name", [:new, :admin, @current_site, :domain_name], :remote => true

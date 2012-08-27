@@ -1,5 +1,7 @@
-%table{:class => "info sites two_col"}
-  %tr
-    %th Site Name
-    %th Delete Site
-  = render :partial => 'site', :collection => @sites.asc(:name)
+%table.table.table-hover.sites
+  %thead
+    %tr
+      %th Site Name
+      %th Delete Site
+  %tbody
+    = render :partial => 'site', :collection => @sites.asc(:name)
