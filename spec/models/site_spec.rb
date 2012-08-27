@@ -165,6 +165,13 @@ describe Site do
       end
     end   
 
+    describe "#article_collection_by_name" do
+      it "should return the article collection by the name" do
+        article_collection = FactoryGirl.create(:article_collection, :site => @site, :name => "news")
+        @site.article_collection_by_name('news').should == article_collection
+      end
+    end
+
     describe "#articles_by_collection_name(name)" do
       it "should return all the articles for the given article collection" do
         article_collection = FactoryGirl.create(:article_collection, :site => @site, :name => "news")
@@ -172,7 +179,17 @@ describe Site do
         @site.articles_by_collection_name('news').should == article_collection.articles
       end
     end
-    
+
+    describe "#articles_by_collection_name_desc(name)" do
+      it "should return all the articles for the article collection" do
+        article_collection = FactoryGirl.create(:article_collection, :site => @site, :name => "news")
+        article_collection.articles << FactoryGirl.build(:article)
+        article_collection.articles << FactoryGirl.build(:article)
+        @site.articles_by_collection_name_desc('news').to_a.should == article_collection.articles.to_a
+        
+      end
+    end
+
     describe "#snippets_by_name(name)" do
       it "should return the snippet by the given name" do
         snippet = FactoryGirl.create(:snippet, :name => "foobar", :site_id => @site.id)    
@@ -185,6 +202,14 @@ describe Site do
         asset_collection = FactoryGirl.create(:asset_collection, :name => 'baz', :site => @site)  
         asset_collection.site_assets << asset = FactoryGirl.build(:site_asset, :name => 'foobar')
         @site.site_asset_by_name('baz', 'foobar').should == asset
+      end
+    end
+
+    describe "#meta_tag_by_name(name)" do
+      it "should return the meta tag with the name" do
+        meta_tag = FactoryGirl.build(:meta_tag, :name => 'foobar')
+        @site.meta_tags << meta_tag
+        @site.meta_tag_by_name('foobar').should == meta_tag
       end
     end
   end

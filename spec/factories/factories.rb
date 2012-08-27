@@ -35,6 +35,7 @@ FactoryGirl.define do
     role "admin" 
     site 
     password "foobar7"
+    time_zone "Eastern Time (US & Canada)"
   end
 
   factory :admin, :parent => :user do 
@@ -62,7 +63,7 @@ FactoryGirl.define do
 
   factory :current_state do
     name "published"
-    time DateTime.new
+    time Time.new
   end
 
   factory :snippet do 
@@ -119,12 +120,14 @@ FactoryGirl.define do
     association :site, strategy: :build
     sequence(:name) { |n| "name_#{n}" }
     editors {[ FactoryGirl.build(:user) ]}
+    permalink_prefix true
     after_build { |article_collection| assign_created_updated_by(article_collection, :article_collections) }
   end
 
   factory :article do 
     association :site, strategy: :build
     sequence(:title) { |n| "title_#{n}" }
+    subheading 'subheading'  
     sequence(:slug) { |n| "slug_#{n}" }
     tags "article"
     layout { FactoryGirl.build(:layout, site_id: "#{site.id}") }

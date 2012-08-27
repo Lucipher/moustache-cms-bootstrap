@@ -1,6 +1,6 @@
 module MoustacheCms
   module Mustache
-    module SiteCustomTags
+    module CustomTags
 
       def first_article_latest_news
         article = @current_site.article_collections.where(:name => 'news').first.articles.desc(:created_at).first
@@ -49,7 +49,7 @@ module MoustacheCms
           else
             faculty << { :profile_image => (render fac.page_parts.where(:name => 'fac_image').first.content),
                          :profile_page_link => %{<a href="#{fac.full_path}" title="view profile">#{fac.title}</a>},
-                         :profile_position => (RedcarpetSingleton.markdown.render(fac.page_parts.where(:name => 'position').first.content)),
+                         :profile_position => (markdown.render(fac.page_parts.where(:name => 'position').first.content)),
                        }
           end
         end

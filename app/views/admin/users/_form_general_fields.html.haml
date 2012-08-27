@@ -41,6 +41,8 @@
               = f.label :role_editor, :class => "radio" do
                 = f.radio_button :role, 'editor'
                 Editor
+        = f.label :time_zone
+        = f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)"
         #submit_fields.form-actions
           = f.submit button_label, :class => "submit btn btn-success"
           = link_to "Cancel", [:admin, :users], :class => "cancel"

@@ -112,13 +112,9 @@ class Article
 
 
   # -- Instance Methods -----
-  alias :full_path :permalink
-  alias :full_path= :permalink=
+  alias_method :full_path, :permalink
+  alias_method :full_path=, :permalink=
 
-  # -- Accepts_nested -----
-  def current_state_attributes=(attributes)
-    self.current_state = CurrentState.find_by_name(attributes[:name])
-  end
 
   # This date would is for an associated date like a meeting or event that is distinct from when the article was published or created.
   def datetime
@@ -157,8 +153,12 @@ class Article
         year = time.year.to_s
         month = time.month.to_s
         day = time.day.to_s
-        collection_name = self.article_collection.name.gsub(/[\s_]/, '-')
-        self.permalink = "/#{collection_name.parameterize}/#{year}/#{month}/#{day}/#{self.slug}" 
+        collection_name = self.article_collection.name.gsub(/[^a-z0-9\-]+/, '-')
+        if self.article_collection.permalink_prefix?
+          self.permalink = "/#{collection_name}/#{year}/#{month}/#{day}/#{self.slug}" 
+        else
+          self.permalink = "/#{year}/#{month}/#{day}/#{self.slug}" 
+        end
       end
     end
 
@@ -186,6 +186,6 @@ class Article
     end
 
     def update_current_state_time
-      self.current_state.time = DateTime.now if self.current_state.changed?
+      self.current_state.time = Time.zone.now if self.current_state.changed?
     end
 end
