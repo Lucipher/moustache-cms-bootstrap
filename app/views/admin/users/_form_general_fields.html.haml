@@ -1,38 +1,46 @@
-= foldable_fieldset 'General' do
-  %ol.form_fields
-    - if admin?
-      %li
-        = f.label :username, "Username<abbr title='required' class='required'>*</abbr>".html_safe
-        = f.text_field :username 
-    %li
-      = f.label :firstname, "Firstname<abbr title='required' class='required'>*</abbr>".html_safe
-      = f.text_field :firstname
-    %li
-      = f.label :lastname, "Lastname<abbr title='required' class='required'>*</abbr>".html_safe
-      = f.text_field :lastname
-    %li
-      = f.label :email, "Email<abbr title='required' class='required'>*</abbr>".html_safe
-      = f.email_field :email
-    - if new_password_fields?
-      %li
-        = f.label :password, "Password<abbr title='required' class='required'>*</abbr>".html_safe
-        = f.password_field :password
-      %li
-        = f.label :password_confirmation, "Password Confirmation<abbr title='required' class='required'>*</abbr>".html_safe
-        = f.password_field :password_confirmation
-    - elsif can_change_password?
-      %li 
-        = link_to 'Change Password', change_password_admin_user_path(@user)
-    - if admin?
-      %li{:id => "role", :class => "inline"}
-        %p.label_for Role <abbr title='required' class='required'>*</abbr>
-        = f.radio_button :role, 'admin' 
-        = f.label :role_admin, 'Admin'
-        = f.radio_button :role, 'designer'
-        = f.label :role_designer, 'Designer'
-        = f.radio_button :role, 'editor'
-        = f.label :role_editor, 'Editor'
-    %li
-      = f.submit button_label, :class => "submit"
-      = link_to "Cancel", [:admin, :users], :class => "cancel"
-   
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
+        General
+    #general_fields.accordion-body.collapse.in
+      .accordion-inner
+        - if admin?
+          = f.label :username, "Username<abbr title='required' class='required'>*</abbr>".html_safe
+          = f.text_field :username 
+
+        = f.label :firstname, "Firstname<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.text_field :firstname
+
+        = f.label :lastname, "Lastname<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.text_field :lastname
+
+        = f.label :email, "Email<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.email_field :email
+      
+        - if new_password_fields?
+          = f.label :password, "Password<abbr title='required' class='required'>*</abbr>".html_safe
+          = f.password_field :password
+
+          = f.label :password_confirmation, "Password Confirmation<abbr title='required' class='required'>*</abbr>".html_safe
+          = f.password_field :password_confirmation
+        - elsif can_change_password?
+          = link_to 'Change Password', change_password_admin_user_path(@user)
+        - if admin?
+          .role
+            %p.label_for Role <abbr title='required' class='required'>*</abbr>
+            .inline.form-inline
+              = f.label :role_admin, :class => "radio" do
+                = f.radio_button :role, 'admin'
+                Admin
+              
+              = f.label :role_designer, :class => "radio" do
+                = f.radio_button :role, 'designer'
+                Designer
+              
+              = f.label :role_editor, :class => "radio" do
+                = f.radio_button :role, 'editor'
+                Editor
+        #submit_fields.form-actions
+          = f.submit button_label, :class => "submit btn btn-success"
+          = link_to "Cancel", [:admin, :users], :class => "cancel"
