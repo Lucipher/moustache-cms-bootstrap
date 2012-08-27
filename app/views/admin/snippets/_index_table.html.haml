@@ -1,5 +1,7 @@
-%table{:class => "info snippets two_col"}
-  %tr
-    %th Snippet Name
-    %th Delete Snippet
+%table.table.table-hover.snippets
+  %thead
+    %tr
+      %th Snippet Name
+      %th.visuallyhidden Delete Snippet
+  %tbody
   = render @snippets
