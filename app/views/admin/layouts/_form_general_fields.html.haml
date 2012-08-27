@@ -1,14 +1,18 @@
-= foldable_fieldset 'General' do
-  %ol.form_fields
-    %li 
-      = f.label :name, "Name<abbr title='required' class='required'>*</abbr>".html_safe
-      = f.text_field :name
-    %li.content
-      = render :partial => 'shared/ace_editor', :locals => { :asset => @layout.content, :builder => nil }
-    %li.content_submit 
-      = f.label :content
-      = f.text_area :content, :class => "code"
-    %li
-      = f.submit button_label, :class => "submit"
-      = f.submit "Save and Continue Editing", :class => "submit"
-      = link_to "Cancel", [:admin, :layouts], :class => "cancel"
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
+        General
+    #general_fields.accordion-body.collapse.in
+      .accordion-inner
+        = f.label :name, "Name<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.text_field :name
+        .content
+          = render :partial => 'shared/ace_editor', :locals => { :asset => @layout.content, :builder => nil }
+        .content_submit 
+          = f.label :content
+          = f.text_area :content, :class => "code"
+        #submit_fields.form-actions
+          = f.submit button_label, :class => "submit btn btn-success"
+          = f.submit "Save and Continue Editing", :class => "submit btn btn-success"
+          = link_to "Cancel", [:admin, :layouts], :class => "cancel"

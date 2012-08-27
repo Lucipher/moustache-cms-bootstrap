@@ -1,6 +1,8 @@
-%table{:class => "info layouts two_col"}
-  %tr
-    %th Layout Name
-    %th Delete Layout
+%table.table.table-hover.layouts
+  %thead
+    %tr
+      %th Layout Name
+      %th.visuallyhidden Delete Layout
+  %tbody
   = render @layouts.asc(:name)
     
