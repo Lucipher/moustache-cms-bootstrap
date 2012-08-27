@@ -1,3 +1,4 @@
 - flash.each do |name, msg|
-  #flash_notice_wrapper
+  #flash_notice_wrapper{:class => "alert alert-block alert-#{name}"}
+    %a.close{:data => {:dismiss => "alert", :href => "#"}} &times;
     %p{:id => "flash_#{name}"}= msg

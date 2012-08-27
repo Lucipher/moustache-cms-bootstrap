@@ -1,5 +1,6 @@
 - if target.errors.any?
-  #error_explanation
+  #error_explanation{:class => "alert alert-block alert-error"}
+    %a.close{:data => {:dismiss => "alert", :href => "#"}} &times;
     %h3 #{pluralize(target.errors.count, "error")} prohibited this record from being saved
     %ol
       - target.errors.full_messages.each do |msg|

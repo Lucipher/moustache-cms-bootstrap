@@ -1,0 +1,16 @@
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
+        General
+    #general_fields.accordion-body.collapse.in
+      .accordion-inner
+        = f.label :name
+        = f.text_field :name 
+
+        #submit_fields.form-actions
+          = f.submit button_label, :class => "submit btn btn-success"
+          - if @asset_collection.new_record?
+            = link_to "Cancel", [:admin, :asset_collections], :class => "cancel"
+          - else
+            = link_to "Cancel", [:admin, @asset_collection], :class => "cancel"

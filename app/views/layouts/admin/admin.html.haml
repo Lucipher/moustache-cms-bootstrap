@@ -21,6 +21,7 @@
             = link_to "#{@current_site.name.titleize} Site", "/", :id => "site", :class => "brand"
             .nav-collapse
               = render :partial => "layouts/admin/welcome"
+      = render :partial => "shared/flash_notice"
       .container
         #main.row
           = render :partial => "layouts/admin/nav"

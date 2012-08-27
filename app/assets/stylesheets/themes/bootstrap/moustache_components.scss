@@ -45,6 +45,16 @@ height: 12.5em;
   }
 }
 
+//Flash Notice
+#flash_notice_wrapper {
+  position: absolute;
+  left: 25%;
+  top: 20px;
+  width: 50%;
+  @include box-shadow(0 0px 3px rgba(0,0,0,.25));
+  z-index: 1050;
+}
+
 // Upload
 /* 
    Plupload

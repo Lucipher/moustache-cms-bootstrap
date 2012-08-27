@@ -12,6 +12,9 @@
   %body
   - flash.each do |name, msg|
     - unless name == :timedout
-      = content_tag :div, msg, :id => "flash_#{name}"
+      #flash_notice_wrapper{:class => "alert alert-block alert-#{name}"}
+        %a.close{:data => {:dismiss => "alert", :href => "#"}} &times;
+        %p{:id => "flash_#{name}"}= msg
+
   #wrapper.container
     = yield
