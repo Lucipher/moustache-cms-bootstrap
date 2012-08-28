@@ -120,9 +120,9 @@ $(document).ready ->
         $('.spinner').css('top', 0)
 
     # Change page part nav name 
-    $('li.page_part_name input').on 'change', ->
+    $('.page_part_name input').on 'change', ->
       pp_id = $(this).parent().siblings().last().children().first().attr 'value'
-      page_part_nav_link = $('ol#page_parts_nav #' + pp_id + '_nav').find('a')
+      page_part_nav_link = $('#page_parts_nav #' + pp_id + '_nav').find('a')
       old_val = page_part_nav_link.html()
 
       # If new value isn't blank change it if it is set it back to the old value 
@@ -142,7 +142,7 @@ $(document).ready ->
 
         if $.rails.fire(element, 'confirm') 
           answer = $.rails.confirm message
-          list = element.parentsUntil('li').parent() 
+          list = element.parentsUntil('lis').parent() 
           if answer && list.children().first().hasClass('page_fold_arrow')
             page_name = $('#' + list.attr('id') + ' > ' + 'strong').text()
             answer = $.rails.confirm('Deleteing the page ' + page_name + ' will delete the page and all child pages it is the parent of!')

@@ -108,14 +108,13 @@ module Admin::PagesHelper
     if @page.new_record?
       content_tag :p, content_tag(:i, "Save page first to add additonal page parts")
     else
-      link_to 'Add Page Part', [:admin, @page, :page_parts], :method => :post, :remote => true
+      link_to 'Add Page Part', [:admin, @page, :page_parts], :method => :post, :remote => true, :class => "btn btn-mini btn-inverse"
     end
   end
 
   def delete_page_part
     if @page.page_parts.size > 1  
-      content = content_tag :span, '&#124; '.html_safe, :class => 'menu_separator'
-      content += link_to "Delete", [:admin, @page, @selected_page_part], :method => :delete, :data => { :confirm => "Are you sure you want to delete the page part #{@selected_page_part.name}" }, :class => "delete", :remote => true
+      content = link_to "Delete", [:admin, @page, @selected_page_part], :method => :delete, :data => { :confirm => "Are you sure you want to delete the page part #{@selected_page_part.name}" }, :class => "delete btn btn-mini btn-danger", :remote => true
       content
     end
   end
@@ -123,12 +122,12 @@ module Admin::PagesHelper
   def page_part_selected(page_part)
     unless @page.new_record?
       if @selected_page_part.id == page_part.id
-        content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab selected' do
-          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true
+        content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab active' do
+          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
         end
       else
         content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab' do
-          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true
+          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
         end
       end
     end
@@ -136,7 +135,7 @@ module Admin::PagesHelper
 
   def show_page_part(page_part)
     if page_part.new_record? || @selected_page_part == page_part
-      'page_part_selected'
+      'page_part_selected active'
     else
       'page_part'
     end

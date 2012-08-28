@@ -1,16 +1,18 @@
-%li#advanced_fields
-  = foldable_fieldset 'Advanced Options' do
-    %div.fields_wrap
-      %ol
-        %li
-          = f.label :slug, "Slug"
-          = f.text_field :slug
-        %li
-          = f.label :full_path, "Full Path"
-          = f.text_field :full_path
-        %li
-          = f.label :breadcrumb, "Breadcrumb"
-          = f.text_field :breadcrumb
-        %li
-          = f.label :tags
-          = f.text_field :tags
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#advanced_fields"}} 
+        Advanced Options
+    #advanced_fields.accordion-body.collapse
+      .accordion-inner
+        = f.label :slug, "Slug"
+        = f.text_field :slug
+
+        = f.label :full_path, "Full Path"
+        = f.text_field :full_path
+
+        = f.label :breadcrumb, "Breadcrumb"
+        = f.text_field :breadcrumb
+
+        = f.label :tags
+        = f.text_field :tags

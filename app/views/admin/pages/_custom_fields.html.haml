@@ -1,17 +1,21 @@
-%li#custom_fields
-  = foldable_fieldset 'Page Custom Fields', :id => 'custom_fields_fieldset' do
-    %div.fields_wrap
-      %div.spinner_wrapper
-        = image_tag 'ajax-loader.gif', :class => 'spinner custom_field_spinner hidden'
-      %ol{ :id => 'custom_fields', :class => 'form_fields custom_fields'} 
-        = f.fields_for :custom_fields do |builder|
-          %li{:id => custom_field_id(builder.object), :class => 'inline custom_field'}  
-            = builder.label :name
-            = builder.text_field :name
-            = builder.label :content
-            = builder.text_field :content
-            =  link_to "Delete", [:admin, @page, builder.object ], :data => { :confirm => "Are you sure you want to delete the custom field #{builder.object.name}", :method => :delete }, :class => "delete", :remote => true
-          = builder_hidden_attribute(builder, @page)
-        %li#add_custom_field
-          = add_custom_field 'Save page first to add custom fields', @page, [:new, :admin, @page, :custom_field]
+.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#custom_fields"}} 
+        General
+    #custom_fields.accordion-body.collapse
+      #custom_fields_fieldset.accordion-inner
+        %div.spinner_wrapper
+          = image_tag 'ajax-loader.gif', :class => 'spinner custom_field_spinner hidden'
+        %div{ :id => 'custom_fields', :class => 'form_fields custom_fields'} 
+          = f.fields_for :custom_fields do |builder|
+            %div{:id => custom_field_id(builder.object), :class => 'inline form-inline control-group custom_field'}  
+              = builder.label :name
+              = builder.text_field :name
+              = builder.label :content
+              = builder.text_field :content
+              =  link_to "Delete", [:admin, @page, builder.object ], :data => { :confirm => "Are you sure you want to delete the custom field #{builder.object.name}", :method => :delete }, :class => "delete btn btn-small btn-danger", :remote => true
+            = builder_hidden_attribute(builder, @page)
+          #add_custom_field
+            = add_custom_field 'Save page first to add custom fields', @page, [:new, :admin, @page, :custom_field]
 

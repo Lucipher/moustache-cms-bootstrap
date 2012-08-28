@@ -1,13 +1,8 @@
-$('.page_parts .form_fields').last().after('<%= escape_javascript(render :partial => "page_part", :locals => { :index => (@page.page_parts.size - 1) } ) %>')
+$('.tab-content .tab-pane').last().after('<%= escape_javascript(render :partial => "page_part", :locals => { :index => (@page.page_parts.size - 1) } ) %>')
 
-# hide current showing page part 
-$('ol.page_part_selected').removeClass('page_part_selected').hide()
-
-# show new page path 
-$('ol#page_part_<%= @page_part.id %>').addClass('page_part_selected').show()
-
-# remove css for seleted nav 
-$('#page_parts_nav .selected').removeClass('selected')
+$('.nav-tabs .tab').removeClass('active')
+$('.tab-content .tab-pane').hide().removeClass('active')
+$('.tab-content #<%= @page_part.id %>').show().addClass('active')
 
 # add to page part nav and make it the selected tab
 $('#page_parts_nav .tab').last().after('<%= escape_javascript(render :partial => "page_part_nav") %>')

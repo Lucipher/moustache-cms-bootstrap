@@ -1,5 +1,4 @@
-%li#submit_fields
-  %fieldset
-    = f.submit button_label, :class => "submit"
-    = f.submit "Save and Continue Editing", :class => "submit"
-    = link_to "Cancel", [:admin, :pages], :class => "cancel"
+#submit_fields.form-actions
+  = f.submit button_label, :class => "submit btn btn-success"
+  = f.submit "Save and Continue Editing", :class => "submit btn btn-success"
+  = link_to "Cancel", [:admin, :pages], :class => "cancel"

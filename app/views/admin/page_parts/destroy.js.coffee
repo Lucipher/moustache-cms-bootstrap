@@ -1,4 +1,4 @@
-pagePartId = '#page_part_' + '<%= @page_part.id %>'
+pagePartId = '#' + '<%= @page_part.id %>'
 pagePartNavId = '#' + '<%= @page_part.id %>' + '_nav'
 
 if $(pagePartId).length
@@ -7,8 +7,8 @@ if $(pagePartId).length
   
   $(pagePartNavId).fadeToggle 'slow', 'linear', ->
     $(this).remove()
-    $('#page_parts_nav .tab').last().addClass('selected')
-    $('#page_parts_wrapper ol').last().addClass('page_part_selected hidden').show()
+    $('#page_parts_nav .tab').last().addClass('active')
+    $('#page_parts_wrapper .tab-pane').last().addClass('active hidden').show()
     $('.delete_page_part').html('<%= delete_page_part %>')
 
 

@@ -1,7 +1,8 @@
-%ol#page_parts_nav
+%ul#page_parts_nav.nav.nav-tabs
   - @page.page_parts.each do |page_part|
     = page_part_selected(page_part)
-  %li.delete_page_part
-    = delete_page_part
-  %li.add_page_part
-    = add_page_part
+  .pull-right
+    .add_page_part.span
+      = add_page_part
+    .delete_page_part.span
+      = delete_page_part
