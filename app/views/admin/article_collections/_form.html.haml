@@ -1,32 +1,40 @@
 = form_for([:admin, @article_collection], :html => {:class => "site_prop", :autocomplete => "off" }) do |f|
   = render :partial => "shared/error_messages", 
            :locals => { :target => @article_collection }    
-  %ol.form_fields
-    %li#general_fields
-      = foldable_fieldset "General" do  
-        %ol.form_fields
-          %li{:class => "inline"}
+  .accordion
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
+          General
+      #general_fields.accordion-body.collapse.in
+        .accordion-inner
+          .control-group
             = f.label :name, mark_required('Name')
             = f.text_field :name 
-          %li{:class => "inline"}
-            %p.info The layout to use when displaying an article from it's permalink.
+          
             = f.label "layout_id", mark_required('Layout')
             = f.collection_select :layout_id, Layout.all, :id, :name
-          %li{:class => "inline"}
-            %p.info Adding a prefix will add the article collection name as a route prefix to the articles generated permalink. For example adding the prefix to a collection named 'foo' will make the permalink for the article titled 'article1' with a publication date of January 1st, 2012, '/foo/2012/1/1/article1'. Without the prefix the permalink would be '/2012/1/1/article1'.
-            = f.radio_button :permalink_prefix, 'true'
-            = f.label :permlink_prefix_true, 'Add prefix to path'
-            = f.radio_button :permalink_prefix, 'false'
-            = f.label :permlink_prefix_false, 'Do not add prefix to path'
-    %li#editor_fields
-      = foldable_fieldset "Editors" do
-        %ol.form_fields
+            %span.help-block.info The layout to use when displaying an article from it's permalink.
+          .control-group
+            %label Permalink Prefix
+            = f.label :permlink_prefix_true, :class => "radio" do
+              = f.radio_button :permalink_prefix, 'true'
+              Add prefix to path
+            = f.label :permlink_prefix_false, :class => "radio" do
+              = f.radio_button :permalink_prefix, 'false'
+              Do not add prefix to path
+            %span.help-block.info Adding a prefix will add the article collection name as a route prefix to the articles generated permalink. For example adding the prefix to a collection named 'foo' will make the permalink for the article titled 'article1' with a publication date of January 1st, 2012, '/foo/2012/1/1/article1'. Without the prefix the permalink would be '/2012/1/1/article1'.
+  .accordion
+    .accordion-group
+      .accordion-heading
+        %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#editors_fields"}} 
+          Editors
+      #editors_fields.accordion-body.collapse.in
+        .accordion-inner
           - User.all_from_current_site(@current_site).asc(:username).each do |user|
-            %li.editor_field.inline
+            .editor_field.inline.form-inline
               = check_box_tag "article_collection[editor_ids][]", user.id, @article_collection.editor_ids.include?(user.id), :id => "editor_id_#{user.username}"
               = label_tag "editor_id_#{user.username}", user.username.downcase
-
-    %li#submit_fields
-      %fieldset
-        = f.submit button_label, :class => "submit"
-        = link_to "Cancel", [:admin, :article_collections], :class => "cancel"
+  #submit_fields.form-actions
+    = f.submit button_label, :class => "submit btn btn-success"
+    = link_to "Cancel", [:admin, :article_collections], :class => "cancel"
