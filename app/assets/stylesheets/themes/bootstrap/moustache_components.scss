@@ -191,68 +191,62 @@ li.plupload_done a {
 
 // Sorting
 
-#pages_list ol {
-  list-style: none;
-  
-  li {
-    & > strong {
-      background: $grayLighter;
-      border: 1px solid #D4D4D4;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      border-radius: 4px;
-      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-      -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
-    }
-  }
-}
-
 ol.pages {
   display: block;
   list-style: none;
   width: 100%;
+  margin-left: 0%;
+  .sortable {
+    width: 99%;
+    margin-left: 1%;
+  }
   li {
     position: relative;
-    padding-top: 0.5em;
-    margin-left: 1em;
+    padding-top: 5px;
+    margin-left: 2%;
+    width: auto;
     .page_fold_arrow {
       position: absolute;
-      left: -1em;
-      height: 28px;
-      width: 8px;
+      left: -16px;
+      height: 16px;
+      width: 16px;
       cursor: pointer;
-      background: transparent image-url("hs.png") no-repeat -16px 0;
+      top: 16px;
+      -webkit-transition: 0.3s ease;
+      -moz-transition: 0.3s ease;
+      -o-transition: 0.3s ease;
+      transition: 0.3s ease;
     }
     .page_fold_arrow_ccw {
       @extend .page_fold_arrow;
-      left: -1.5em;
-      background-position: -25px 0;
-      width: 13px;
+      -webkit-transform: rotate(90deg); 
+      -moz-transform:    rotate(90deg); 
+      -ms-transform:     rotate(90deg); 
+      -o-transform:      rotate(90deg); 
     }
     .add_child_page {
+      @extend .visuallyhidden;
       text-indent: -9999px;
-      margin: 0 0.5em;
+      margin: 0;
       cursor: pointer;
     }
     .delete_page {
+      @extend .visuallyhidden;
       text-indent: -9999px;
       cursor: pointer;
     }
     strong {
       display: block;
-      height: 2em;
-      line-height: 2em;
-      padding-left: 5px;
-      @include border-radius(2px);
-      -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-      -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);  
-      box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-      text-shadow: 0 1px 0 lighten($linkColor, 80%);
+      margin: 0 0 -1px;
+      padding: 8px 14px;
+      border: 1px solid #E5E5E5;
+      @include border-radius(6px);
+
       a:link, a:visited {
+        font-weight: normal;
         font-size: 14px;
-        line-height: 26px;
-        padding: 4px 10px;
+        line-height: 18px;
+        padding: 0px 5px;
         margin-right: 8px;
         text-decoration: none;
         color: $linkColor;
@@ -268,40 +262,40 @@ ol.pages {
       }
     }
     strong.published {
-      border-top: 1px solid #D2D1D0;
-      background: $grayLighter;
+      background: $white;
     }
     strong.draft {
-      border-top: 1px solid #CBBCAF;
-      background: $grayLight;
+      background: $grayLighter;
     }
     strong.home_page {
-      border-left: 1px solid #D2D1D0;
     }
     .page_info {
       color: $gray;
       position: absolute;
       right: 20px;
-      top: 1.25em;
+      top: 15px;
       font-size: calc_em(12px, 14px);
       span {
-        line-height: 1;
         vertical-align: top;
-        text-shadow: 0 1px 0 lighten($gray, 60%);
       }
       a {
         display: inline-block;
       }
     }
+
+  }
+  &.nav > li {
+    margin-left: 0;
   }
   li#home_page {
     margin-left: 0;
   }
 }
 
-ol.pages li em.sortable_list {
+.pages .sortable_list {
   cursor: move;
   float: left;
+  margin: 12px 2px 12px 8px;
 }
 
 // No resources
@@ -317,6 +311,19 @@ ol.pages li em.sortable_list {
 
 // Spinner
 
-.spinner.hidden {
-  display: none;
+.spinner_wrapper {
+  position: relative;
+}
+
+.spinner {
+  position: absolute;
+  z-index: 200;
+  left: 50%;
+  padding: 20px;
+  margin-top: 10px;
+  background: rgba(0,0,0,0.8);
+  @include border-radius(4px);
+  &.hidden {
+    display: none;
+  }
 }

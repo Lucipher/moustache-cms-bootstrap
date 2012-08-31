@@ -56,11 +56,4 @@ $(document).ready(function() {
   $('.logout').on('click', function() {
     sessionStorage.clear();
   });
-
-  // Sortable
-  $('#pages_list > ol.pages').addClass('nav nav-tabs nav-stacked')
-  $('ol.pages li em.sortable_list').html('<i class="icon-align-justify"></i>');
-  $('.add_child_page').parent().prepend('<i class="icon-plus"></i>');
-  $('.delete_page').parent().prepend('<i class="icon-minus"></i>');
-
 });

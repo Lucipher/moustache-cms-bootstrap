@@ -3,16 +3,16 @@ module Admin::PagesHelper
   def page_is_sortable?(page)
     unless page.root?
       if page.published?
-        content_tag :em, "", :class => 'sortable_list published'
+        content_tag :i, "", :class => 'sortable_list icon-align-justify published'
       else
-        content_tag :em, "", :class => 'sortable_list draft'
+        content_tag :i, "", :class => 'sortable_list icon-align-justify draft'
       end
     end
   end
 
   def can_add_child_page?(page)
     if can? :create, page
-      link_to "<div class=\"add_child_page\">Add Page</div>".html_safe, new_admin_page_path(:parent_id => page.id), :class => "create"
+      link_to "<i class=\"icon-plus\"></i><div class=\"add_child_page\">Add Page</div>".html_safe, new_admin_page_path(:parent_id => page.id), :class => "create"
     end
   end
 
@@ -20,7 +20,7 @@ module Admin::PagesHelper
     return if page.root?
 
     if can? :destroy, page 
-      link_to "<div class=\"delete_page delete_#{page.title.parameterize('_')}\">Delete Page</div>".html_safe, admin_page_path(page), :method => :delete, :data => { :confirm => "Are you sure you want to delete the page #{page.title}?" }, 'data-title' => "#{page.title}", :class => "delete", :remote => true
+      link_to "<i class=\"icon-trash\"></i><div class=\"delete_page delete_#{page.title.parameterize('_')}\">Delete Page</div>".html_safe, admin_page_path(page), :method => :delete, :data => { :confirm => "Are you sure you want to delete the page #{page.title}?" }, 'data-title' => "#{page.title}", :class => "delete", :remote => true
     end
   end
 
@@ -50,7 +50,7 @@ module Admin::PagesHelper
     return if page.root?
 
     if page.children.size > 0
-      link_to "<div></div>".html_safe, admin_page_path(page), :remote => true, :class => "page_fold_arrow"
+      link_to "<i class=\"icon-play\"></i>".html_safe, admin_page_path(page), :remote => true, :class => "page_fold_arrow"
     end
   end
 

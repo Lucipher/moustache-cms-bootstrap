@@ -2,10 +2,13 @@ $(document).ready ->
   if $('body.pages').length
 
     root = global ? window
+    # Bootstrap Modifications
+    $('#pages_list > .pages').addClass('nav nav-tabs nav-stacked')
+
     # sort index page pages
     root.sortablePageList = (pageList) ->
       pageList.sortable
-        handle: 'em.sortable_list'
+        handle: '.sortable_list'
         axis: 'y'
         opacity: 0.6
         update: (event, ui) ->
@@ -90,9 +93,9 @@ $(document).ready ->
         setSessionStore 'pagesState', pagesList
 
     # page parts ajax spinner 
-    $('ol#page_parts_nav a').live 'ajax:beforeSend', ->
+    $('#page_parts_nav a').live 'ajax:beforeSend', ->
       $('.page_parts div.spinner_wrapper .spinner').removeClass 'hidden'
-    $('ol#page_parts_nav a').live 'ajax:success', ->
+    $('#page_parts_nav a').live 'ajax:success', ->
       $('.page_parts div.spinner_wrapper .spinner').addClass 'hidden'
 
     # on the index page rotate arrow if the child has child_pages.

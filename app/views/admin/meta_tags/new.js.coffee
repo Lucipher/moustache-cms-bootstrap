@@ -4,10 +4,10 @@ replaceCharWith = (str, oldChar, newChar) ->
   newStr = str.substring(0, index) + newChar + str.substring(index + 1)
  
 
-if $('li#add_meta_tag').length
-  $('li#add_meta_tag').before('<%= escape_javascript(render(:partial => @meta_tag)) %>').fadeIn()
+if $('#add_meta_tag').length
+  $('#add_meta_tag').before('<%= escape_javascript(render(:partial => @meta_tag)) %>').fadeIn()
 
-  meta_tags = $('ol.meta_tags').find('li.meta_tag')
+  meta_tags = $('meta_tags').find('.meta_tag')
 
   if meta_tags.length > 0
     metaTagCount = meta_tags.length - 1
