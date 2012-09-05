@@ -4,12 +4,12 @@ Moustache CMS Bootstrap is a fork of Amkirwan's [Moustache CMS](https://github.c
 
 **In Addition to Moustach by Amkirwan:**
 
-- Twitter Bootstrap UI
+- Twitter Bootstrap Admin UI
 
 ## Getting Started Quickly
 
 - A recent version of MongoDB >= 2.0 installed and running. 
-- Then clone the repo git clone git://github.com/amkirwan/moustache-cms.git
+- Then clone the repo git clone git://github.com/n00b2pr0/moustache-cms-bootstrap.git
 - Run bundle install
 - Then run rake db:seed it will create a admin login account for the user account with the login 'admin@moustachecms.org' and the password 'moustache'
 
