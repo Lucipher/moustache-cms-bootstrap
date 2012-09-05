@@ -142,6 +142,21 @@ class Article
     self.current_state.formatted_time_with_zone
   end
 
+  def date_at_with_time
+    return "" if self.date.nil?
+    self.date.strftime("%B %d, %Y at%l%P")
+  end
+
+  def date_at
+    return "" if self.date.nil?
+    self.date.strftime("%B %d, %Y")
+  end
+
+  def date_at_time_only
+    return "" if self.date.nil?
+    self.date.strftime("%l%P")
+  end
+
   private 
     def set_date?
       if !self.set_date

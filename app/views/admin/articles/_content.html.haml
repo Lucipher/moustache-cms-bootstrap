@@ -5,7 +5,7 @@
         Content
     #article_content_area.accordion-body.collapse.in
       .accordion-inner
-        = f.label :filter_name, "Filter<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.label :filter_name, mark_required('Filter')
         = f.collection_select :filter_name, Filter.all, :id, :name, {}, {:class => "page_part_filter"}
         .content
           %p.label_for.ace_label Subheading
@@ -14,8 +14,3 @@
           = f.label :subheading
           = f.text_area :subheading, :class => "code"
         .content
-          %p.label_for.ace_label Content
-          %pre#article_content.span8= @article.content
-        .content_submit
-          = f.label :content
-          = f.text_area :content, :class => "code"
