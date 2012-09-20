@@ -8,9 +8,8 @@
         = f.label :filter_name, mark_required('Filter')
         = f.collection_select :filter_name, Filter.all, :id, :name, {}, {:class => "page_part_filter"}
         .content
-          %p.label_for.ace_label Subheading
-          %pre#article_subheading_content.span8= @article.subheading
+          = render :partial => 'shared/ace_editor', :locals => { :asset => @article.content, :builder => nil }
         .content_submit
-          = f.label :subheading
-          = f.text_area :subheading, :class => "code"
+          = f.label :content
+          = f.text_area :content, :class => "code"
         .content

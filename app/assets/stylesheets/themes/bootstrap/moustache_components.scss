@@ -18,7 +18,12 @@
   left: 0;
 }
 #article_subheading_content {
-height: 12.5em;
+  height: 12.5em;
+}
+
+.doc, .view {
+  margin-bottom: 10px;
+  text-align: right;
 }
 
 // Datetime select
