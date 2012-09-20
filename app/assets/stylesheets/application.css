@@ -1,4 +1,7 @@
 /*
 *= require_self
 *= require themes/bootstrap/app_bootstrap
+*= require plupload/jquery.plupload.queue/css/jquery.plupload.queue
+*= require jquery.fancybox
 */
+

@@ -1,5 +1,19 @@
 module Admin::PagesHelper  
 
+  def render_pages(pages)
+    return if pages.empty?
+
+    if pages.first.root?
+      content_tag :ol, :class => 'pages' do
+        render pages
+      end
+    else
+      content_tag :ol, :class => 'pages sortable', 'data-url' => sort_admin_page_path(pages.first.parent) do
+        render pages
+      end
+    end
+  end
+
   def page_is_sortable?(page)
     unless page.root?
       if page.published?
@@ -23,21 +37,6 @@ module Admin::PagesHelper
       link_to "<i class=\"icon-trash\"></i><div class=\"delete_page delete_#{page.title.parameterize('_')}\">Delete Page</div>".html_safe, admin_page_path(page), :method => :delete, :data => { :confirm => "Are you sure you want to delete the page #{page.title}?" }, 'data-title' => "#{page.title}", :class => "delete", :remote => true
     end
   end
-
-  def render_pages(pages)
-    return if pages.empty?
-
-    if pages.first.root?
-      content_tag :ol, :class => 'pages' do
-        render pages
-      end
-    else
-      content_tag :ol, :class => 'pages sortable', 'data-url' => sort_admin_page_path(pages.first.parent) do
-        render pages
-      end
-    end
-  end
-
   def page_id(page)
     page.title.parameterize('_') + '_' + page.id.to_s
   end
@@ -106,7 +105,7 @@ module Admin::PagesHelper
 
  def add_page_part
     if @page.new_record?
-      content_tag :p, content_tag(:i, "Save page first to add additonal page parts")
+      content_tag :p, content_tag(:i, "Page must be saved first before you can add additional page parts")
     else
       link_to 'Add Page Part', [:admin, @page, :page_parts], :method => :post, :remote => true, :class => "btn btn-mini btn-inverse"
     end

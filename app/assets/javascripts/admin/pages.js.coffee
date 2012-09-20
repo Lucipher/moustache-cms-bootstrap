@@ -92,6 +92,21 @@ $(document).ready ->
           pagesList.page_ids.push $(@).parent().attr('data-page_id')
         setSessionStore 'pagesState', pagesList
 
+    $('.preview').click 'ajax:beforeSend', ->
+      pagePartNames = []
+      $('#page_parts_nav .tab').each ->
+        pagePartNames.push 'page_part_' + $(@).text()
+
+      text = []
+      $.each MoustacheEditor.editors, (index, editor) ->
+        text.push editor.getValue()
+
+      dataObject = {} 
+      $.each pagePartNames, (index, value) ->
+        dataObject[value] = text[index]
+
+      @.data = JSON.stringify(dataObject)
+
     # page parts ajax spinner 
     $('#page_parts_nav a').live 'ajax:beforeSend', ->
       $('.page_parts div.spinner_wrapper .spinner').removeClass 'hidden'
@@ -150,4 +165,22 @@ $(document).ready ->
             page_name = $('#' + list.attr('id') + ' > ' + 'strong').text()
             answer = $.rails.confirm('Deleteing the page ' + page_name + ' will delete the page and all child pages it is the parent of!')
         answer
+
+    # Handle page preview   
+    $('.preview').click (e) ->
+      e.preventDefault()
+      $.each MoustacheEditor.editors, (index, editor) ->
+        editor.updateTextarea()
+      form = $('form.page')
+      action = form.attr('action').split('/')
+      page_id = action[action.length - 1]
+      url = '/admin/pages/' + page_id + '/preview'
+      $.post url, form.serialize(), -> 
+        
+    # Display Moustache Tags Helpers  
+    $('.mustache_tags').fancybox 
+      maxHeight: 400
+      maxWidth: 600
+      height: '70%'
+    
 

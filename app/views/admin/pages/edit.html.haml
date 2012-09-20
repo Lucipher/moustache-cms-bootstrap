@@ -1,10 +1,12 @@
 - header_content 'shared/header_wrapper', :object => @page do
   %div{:id => "delete_page", :class => "delete edit_page pull-right"}
-    = link_to 'View Page', @page.full_path, :target => "_blank", :class => 'view_page btn btn'
     = link_to "Delete Page", [:admin, @page], :method => :delete, :data => { :confirm => "Are you sure you want to delete the page #{@page.title}", 'data-title' => "#{@page.title}" }, :class => "action btn btn-danger delete #{child_pages}"
 
 - inner_content "shared/inner_wrapper"  do
   %div.breadcrumb
     = link_to "&laquo; Pages".html_safe, [:admin, :pages]
-
+  %div.view
+    = link_to 'View Page', @page.full_path, :target => "_blank", :class => 'btn btn-small view_page'
+    = link_to 'Preview Changes', @page.full_path, :target => '_blank', :class => 'btn btn-small view_page preview'
+    = link_to 'Tags', '/mustache_tags.html', :class => 'btn btn-small mustache_tags fancybox.iframe'
   = render :partial => "form", :locals => { :button_label => "Update Page"}

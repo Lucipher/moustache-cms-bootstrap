@@ -1,4 +1,4 @@
 #submit_fields.form-actions
   = f.submit button_label, :class => "submit btn btn-success"
-  = f.submit "Save and Continue Editing", :class => "submit btn btn-success"
+  = f.submit "Save and Continue Editing", :name => 'continue', :class => "submit btn btn-success"
   = link_to "Cancel", [:admin, :pages], :class => "cancel"

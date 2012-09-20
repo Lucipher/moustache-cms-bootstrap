@@ -45,18 +45,26 @@ $(document).ready ->
 
     setupView:  ->
       @contentSettings @options.filter
-      @hideUpdateTextarea()
+      @hideTextarea()
+      @updateTextareaOnSubmit()
       @lineWrapModeChange() 
 
     contentSettings: (filterText) ->
       @editor.getSession().setMode MoustacheEditor.modesByName[filterText].mode
 
-    # on form submit update hidden textarea with ace editor content
-    hideUpdateTextarea: ->
+    hideTextarea: ->
       $('.content_submit').hide()
-      #update hidden textarea
+
+    # on form submit update hidden textarea with ace editor content
+    updateTextareaOnSubmit: ->
       $('.site_prop').submit =>
-        @element.parent().next().find('textarea').val @editor.getSession().getValue()
+        @.updateTextarea()
+
+    updateTextarea: -> 
+      @element.parent().next().find('textarea').val @editor.getSession().getValue()
+
+    getValue: -> 
+      @editor.getSession().getValue()
 
     lineWrapModeChange: -> 
       editor = @editor
@@ -87,6 +95,7 @@ $(document).ready ->
 
   else if $("body.articles #article_content").length
     hbEditorContent = new MoustacheEditor elementId: "article_content", filter: $('#article_filter_name').val(), useWrapMode: true
+    MoustacheEditor.editors.push hbEditorContent
 
     $('#article_filter_name').change ->
       hbEditorContent.contentSettings $(@).val() 
