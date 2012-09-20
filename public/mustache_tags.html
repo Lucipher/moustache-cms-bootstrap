@@ -4,31 +4,40 @@
     <meta charset="utf-8">
     <title>Moustache Cms - Available Mustache Tags</title>
     <link href="/assets/html5reset.css" media="screen" rel="stylesheet">
-    <style> 
+    <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
       div.section {
         margin-bottom: 1em;
       }
       div.section p {
         margin-bottom: 0;
       }
+      h1, h2, h3, h4, h5, h6 {
+        margin: 10px 0;
+        font-family: inherit;
+        font-weight: bold;
+        line-height: 1;
+        color: inherit;
+        text-rendering: optimizelegibility;
+      }
       h1 { 
-       color: #FFF;
-       padding: 0.2em;
-       font-size: 1.5em;
-       font: bold 1.5em/1.2 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-       border-bottom: 1px solid #989898;
-       background: #434343;
+        font-size: 36px;
+        line-height: 40px;
       }
       h2 {
-        padding: 0.5em 0 0.2em 0;
-        border-bottom: 1px solid #989898;
-        font: bold 1.25em/1.2 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        font-size: 30px;
+        line-height: 40px;
+        border-bottom: 1px solid #ddd;
+ 
       }
       h3 {
-        color: #E56039;
-        padding-top: 1.125em;
-        padding-bottom: 0.25em;
-        font: bold 1em/1.2 "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        color: #3A87AD;
+        margin-bottom: 10px;
+        font-size: 21px;
+        font-weight: 200;
+        line-height: 30px;
       }
       div.main-content {
         padding: 0 0.5em;
@@ -38,14 +47,43 @@
         font: 1em/1.5 "Times New Roman", Times, serif;
       }
       p.first-paragraph { margin-top: 1em; }
-      pre {
-        overflow: auto;
-        width: 93%;
-        margin-top: 0.25em;
-        padding: 6px 10px;
-        border: 1px solid #CCCCCC;
-        background: #F8F8F8;
+      .tag {
+        margin: 0 0 50px;
       }
+      b {
+        display: none;
+      }
+      pre {
+        position: relative;
+        margin: 15px 0;
+        padding: 39px 19px 14px;
+        *padding-top: 19px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        word-wrap: break-word;
+        -webkit-border-radius: 4px;
+           -moz-border-radius: 4px;
+                border-radius: 4px;
+      }
+
+      /* Echo out a label for the example */
+      pre:after {
+        content: "Usage";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        padding: 3px 7px;
+        font-size: 12px;
+        font-weight: bold;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #9da0a4;
+        -webkit-border-radius: 4px 0 4px 0;
+           -moz-border-radius: 4px 0 4px 0;
+                border-radius: 4px 0 4px 0;
+      }
+
+      }     
       pre code {
         line-height: 1.2;
         font-size: 0.8125em; // 13/16 = 0.8125
