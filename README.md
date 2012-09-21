@@ -21,7 +21,7 @@ Fire up rails and log in
 Alternatively you can use [Pow](http://pow.cx/)
 
 - Symlink into Pow: `cd ~/.pow` then `ln -s /path/to/moustache-cms-bootstrap moustache`
-- Go to http://moustache-cms.dev/admin and login with the email and password listed above
+- Go to http://moustache.dev/admin and login with the email and password listed above
 
 Checkout the Amkirwan's Moustache CMS [wiki](http://github.com/amkirwan/moustache-cms/wiki) for more information and go to the [Demo](https://demo.moustachecms.org/admin) page to see Moustache CMS in action. 
 
