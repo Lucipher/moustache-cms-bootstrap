@@ -64,13 +64,6 @@ describe Article do
       @article.should_not be_valid
     end
 
-    it "should not be valid without a unique title" do
-      FactoryGirl.build(:article, 
-                    :site => site,
-                    :title => @article.title,
-                    :article_collection => @article_collection).should_not be_valid
-    end
-
     it "should not be valid without a permalink" do
       @article.stub(:permalink_set).and_return(nil)
       @article.permalink = nil
@@ -84,6 +77,12 @@ describe Article do
                     :slug => @article.slug,
                     :permalink => @article.permalink,
                     :article_collection => @article_collection).should_not be_valid
+    end
+
+    it "should raise an error when the " do
+      lambda do
+        FactoryGirl.create(:article, :site => site, :permalink => @article.permalink)  
+      end.should raise_error(Mongoid::Errors::Validations)
     end
 
     it "should not be valid without a slug" do
@@ -147,18 +146,17 @@ describe Article do
         @collection_name = @article.article_collection.name.gsub(/[\s_]/, '-')
       end
 
-      it "should set the permalink" do
-        @article.permalink = nil
-        @article.save
-        @article.permalink.should == "/#{@collection_name}/#{@year}/#{@month}/#{@day}/#{@article.slug}"
-      end
-
-      it "should not set the prefix to the path" do
-        @article_collection.permalink_prefix = false
-        @article_collection.save
+      it "should not the prefix path to the permalink" do
         @article.permalink = nil
         @article.save
         @article.permalink.should == "/#{@year}/#{@month}/#{@day}/#{@article.slug}"
+      end
+
+      it "should add the prefix path to the permalink" do
+        @article_collection.permalink_prefix = true
+        @article.permalink = nil
+        @article.save
+        @article.permalink.should == "/#{@collection_name}/#{@year}/#{@month}/#{@day}/#{@article.slug}"
       end
     end
   end
@@ -175,10 +173,39 @@ describe Article do
   # -- Instance Methods -----
   describe "Instance Methods" do
 
+    describe "#status_formatted_date_time" do
+      it "returns the formatted_date_time of the current state" do
+        @article.status_formatted_date_time.should == @article.current_state.formatted_date_time  
+      end
+    end
+
+    describe "#status_formatted_date_time_with_zone" do
+      it "returns the formatted_date_time_with_zone of the current state" do
+        @article.status_formatted_date_time_with_zone.should == @article.current_state.formatted_date_time_with_zone
+      end
+    end
+
+    describe "#status_formatted_date" do
+      it "returns the formatted_date for the current state" do
+        @article.status_formatted_date.should == @article.current_state.formatted_date
+      end  
+    end
+
+    describe "#status_formatted_time" do
+      it "returns the formatted_time of the current state" do
+        @article.status_formatted_time.should == @article.current_state.formatted_time  
+      end
+    end
+
+    describe "#status_formatted_time_zone" do
+      it "returns the formatted_time with zone for the current state" do
+        @article.status_formatted_time_zone.should == @article.current_state.formatted_time_zone
+      end
+    end
     describe "#datetime" do
       it "returns a dateime in iso8601 format for a associated date associated with the artcile" do
         @article.date = "2012-01-06 15:41:01"
-        @article.datetime.should == "2012-01-06T15:41:01-05:00" 
+        @article.datetime.should =~ /^(2012-01-06T15:41:01)(-|\+)(.*)/
       end
       
       it "should return an empty string if the dateime is nil" do
@@ -186,10 +213,24 @@ describe Article do
       end
     end
 
-    describe "#date_at" do
-      it "returns" do
+    describe "#date_at_with_time" do
+      it "returns an assigned date with the time for the article" do
         @article.date = "2012-01-06 15:41:01"
-        @article.date_at.should == "January 06, 2012 at 3pm"
+        @article.date_at_with_time.should == "January 06, 2012 at 3pm"
+      end
+    end
+
+    describe "#date_at" do
+      it "returns an assigned date for the article" do
+        @article.date = "2012-01-06 15:41:01"
+        @article.date_at.should == "January 06, 2012"  
+      end  
+    end
+    
+    describe "#dat_at_time_only" do
+      it "returns an assigned date time for the article" do
+        @article.date = "2012-01-06 15:41:01"
+        @article.date == "3pm"    
       end
     end
   end

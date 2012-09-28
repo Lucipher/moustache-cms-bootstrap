@@ -1,8 +1,10 @@
 # Moustache CMS Bootstrap
 
+[![Build Status](https://secure.travis-ci.org/n00b2pr0/moustache-cms-bootstrap.png)](http://travis-ci.org/n00b2pr0/moustache-cms-bootstrap)
+
 Moustache CMS Bootstrap is a fork of Amkirwan's [Moustache CMS](https://github.com/amkirwan/moustache-cms).
 
-**In Addition to Moustach by Amkirwan:**
+**In Addition to Moustache by Amkirwan:**
 
 - Twitter Bootstrap Admin UI
 

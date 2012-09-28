@@ -11,13 +11,13 @@ class ArticleCollection
 
     # -- Fields --------------- 
   field :name
-  field :permalink_prefix, :type => Boolean
+  field :permalink_prefix, :type => Boolean, :default => false
   
   # -- Associations -------------
   belongs_to :site
   belongs_to :layout
-  belongs_to :created_by, :class_name => "User"
-  belongs_to :updated_by, :class_name => "User"
+  belongs_to :created_by, :class_name => "User", :inverse_of => :article_collections_created
+  belongs_to :updated_by, :class_name => "User", :inverse_of => :article_collections_updated
   has_many :articles
   has_and_belongs_to_many :editors, :class_name => "User", :inverse_of => :article_collections
 
@@ -35,9 +35,6 @@ class ArticleCollection
   validates :updated_by_id,
             :presence => true
 
-  after_initialize do |ac|
-    ac.permalink_prefix = false if ac.permalink_prefix.nil?
-  end
 
   # -- Class Methods --
   def self.articles_by_collection_name(name)

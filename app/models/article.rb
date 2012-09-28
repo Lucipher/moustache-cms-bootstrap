@@ -4,7 +4,9 @@ class Article
   include Mongoid::MultiParameterAttributes
 
   include MoustacheCms::Published
-  include Mongoid::TaggableWithContext
+  include MoustacheCms::DefaultMetaTags
+
+  include Mongoid::Document::Taggable
 
   attr_accessible :title,
                   :subheading,
@@ -14,11 +16,10 @@ class Article
                   :content,
                   :current_state, 
                   :current_state_attributes,
-                  :meta_tags_attributes,
                   :filter_name,
                   :authors,
                   :layout_id,
-                  :tags,
+                  :tag_list,
                   :set_date,
                   :date
 
@@ -35,24 +36,22 @@ class Article
   field :set_date, :type => Boolean
   field :date, :type => Time
 
-  taggable
+  # taggable
 
   # -- Index -----
-  index :title
-  index :permalink
+  index :title => 1
+  index :permalink => 1
 
   # -- Associations -------------
   embeds_one :current_state, :as => :publishable, :cascade_callbacks => true
-  embeds_many :meta_tags, :as => :meta_taggable
   belongs_to :site
   belongs_to :article_collection
-  belongs_to :created_by, :class_name => "User"
-  belongs_to :updated_by, :class_name => "User"
+  belongs_to :created_by, :class_name => "User", :inverse_of => :articles_created
+  belongs_to :updated_by, :class_name => "User", :inverse_of => :articles_updated
   belongs_to :layout, :class_name => "Layout"
   has_and_belongs_to_many :authors
 
   accepts_nested_attributes_for :current_state
-  accepts_nested_attributes_for :meta_tags
 
   # -- Validations -----------------------------------------------
   validates :site_id,
@@ -61,14 +60,9 @@ class Article
   validates :title,
             :presence => true
 
-  # validate :unique_title, 
-  #          :message => "The title %{value} within this collection is already taken"
-
   validates :permalink,
-            :presence => true
-
-  validate :unique_permalink,
-           :message => "The permalink %{value} is already being used by another article"
+            :presence => true,
+            :uniqueness => { :scope => :site_id, :message => "must be unique. %{value} is used by another article in this site." }
 
   validates :slug,
             :presence => true
@@ -88,23 +82,10 @@ class Article
   validates :filter_name,
             :presence => true
 
-  # def unique_title
-  #   if Article.exists?(:conditions => { :id => { "$ne" => self.id}, :title => /^#{self.title}$/, :article_collection_id => self.article_collection_id, :site_id => self.site_id})
-  #     errors.add(:title, 'within this collection is already taken')
-  #   end
-  # end
-
-  def unique_permalink
-    if Article.exists?(:conditions => { :id => { "$ne" => self.id}, :permalink => /^#{self.permalink}$/, :article_collection_id => self.article_collection_id, :site_id => self.site_id})
-      errors.add(:permalink, 'within this collection is already taken')
-    end
-  end
-
   # -- Callbacks ----------
   before_validation :format_title, :slug_set, :permalink_set
   before_save :set_date?
   before_update :update_slug_permalink
-  after_initialize :default_meta_tags
 
   # -- Class Methods --
   def self.article_by_permalink(path)
@@ -130,24 +111,24 @@ class Article
   end
 
   # This returns the associated datetime in words in the format January 06, 2012 at 3pm
-  def formatted_date_time
+  def status_formatted_date_time
     self.current_state.formatted_date_time
   end
 
-  def formatted_date_time_with_zone
-    self.current_state.formatted_date_time
+  def status_formatted_date_time_with_zone
+    self.current_state.formatted_date_time_with_zone
   end
 
-  def formatted_date
+  def status_formatted_date
     self.current_state.formatted_date
   end
 
-  def formatted_time
+  def status_formatted_time
     self.current_state.formatted_time
   end
 
-  def formatted_time_with_zone
-    self.current_state.formatted_time_with_zone
+  def status_formatted_time_zone
+    self.current_state.formatted_time_zone
   end
 
   def date_at_with_time
@@ -208,14 +189,6 @@ class Article
         permalink = permalink_split.join('/')
         permalink.gsub!('_', '-')
         self.permalink = '/' + permalink.parameterize('/') + '/' + self.slug
-      end
-    end
-
-    def default_meta_tags
-      if self.new_record? && self.meta_tags.size == 0
-        self.meta_tags.build(:name => "title", :content => "")
-        self.meta_tags.build(:name => "keywords", :content => "")
-        self.meta_tags.build(:name => "description", :content => "")
       end
     end
 

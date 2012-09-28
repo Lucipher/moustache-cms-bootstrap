@@ -8,3 +8,5 @@
       %th.visuallyhidden Delete Article
   %tbody
   = render @articles
+= paginate @articles, :remote => true
+

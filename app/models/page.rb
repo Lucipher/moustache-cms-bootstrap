@@ -3,10 +3,11 @@ class Page
   include Mongoid::Timestamps
  
   include MoustacheCms::Published
+  include MoustacheCms::DefaultMetaTags
 
   include Mongoid::Tree 
   include Mongoid::Tree::Ordering
-  include Mongoid::TaggableWithContext
+  include Mongoid::Document::Taggable
 
   attr_accessible :parent_id,
                   :title, 
@@ -20,9 +21,8 @@ class Page
                   :page_parts,
                   :page_parts_attributes,
                   :post_container,
-                  :meta_tags_attributes,
                   :custom_fields_attributes,
-                  :tags
+                  :tag_list
                   
   # -- Fields -----------------------------
   field :title
@@ -30,25 +30,21 @@ class Page
   field :full_path
   field :breadcrumb
 
-  taggable
-
   # -- Index -------------------------------
-  index :title
-  index :full_path
+  index :title => 1
+  index :full_path => 1
   
   # -- Associations-------------------------
   embeds_one :current_state, :as => :publishable, :cascade_callbacks => true 
-  embeds_many :meta_tags, :as => :meta_taggable
   embeds_many :custom_fields, :as => :custom_fieldable
   embeds_many :page_parts 
   belongs_to :site
   belongs_to :layout
-  belongs_to :created_by, :class_name => "User"
-  belongs_to :updated_by, :class_name => "User"
+  belongs_to :created_by, :class_name => "User", :inverse_of => :pages_created
+  belongs_to :updated_by, :class_name => "User", :inverse_of => :pages_updated
   has_and_belongs_to_many :editors, :class_name => "User", :inverse_of => :pages
   
   accepts_nested_attributes_for :current_state
-  accepts_nested_attributes_for :meta_tags
   accepts_nested_attributes_for :custom_fields
   accepts_nested_attributes_for :page_parts
   
@@ -70,31 +66,14 @@ class Page
                         :created_by_id, 
                         :updated_by_id                    
 
-  validate :site_id_match_create, :on => :create unless Rails.env == "test"
-  validate :site_id_match_update, :on => :update unless Rails.env == "test"
-
-  # protect against creating a page in a site the user does not have permission to
-  def site_id_match_create
-    unless User.find(created_by_id).site_id == site_id && User.find(updated_by_id).site_id == site_id
-      errors.add(:site_id, "The pages site_id must match the users site_id")
-    end
-  end
-
-  def site_id_match_update
-    unless User.find(updated_by_id).site_id == site_id
-      errors.add(:site_id, "The pages site_id must match the users site_id")
-    end
-  end
-  
   # -- Callbacks -----------------------------------------------
-  after_initialize :default_meta_tags
   before_validation :format_title, :slug_set, :full_path_set, :breadcrumb_set
   before_save :uniq_editor_ids, :strip_page_parts
   after_save :update_user_pages
   before_destroy :destroy_children
 
   # -- Scopes ----------------------------------------------------------
-  scope :all_from_current_site, lambda { |current_site| { :where => { :site_id => current_site.id }} }
+  scope :all_from_current_site, ->(current_site) { where(:site_id => current_site.id) }
   
   # -- Class Mehtods --------------------------------------------------
   def self.find_by_id(page_id)
@@ -147,15 +126,7 @@ class Page
   
   # -- Private Instance Methods -----------------------------------------------
   private 
-
-    def default_meta_tags
-      if self.new_record? && self.meta_tags.size == 0
-        self.meta_tags.build(:name => "title", :content => "")
-        self.meta_tags.build(:name => "keywords", :content => "")
-        self.meta_tags.build(:name => "description", :content => "")
-      end
-    end
-
+  
     def format_title
       self.title.strip! unless self.title.nil?
     end
@@ -167,6 +138,7 @@ class Page
           self.slug = ""
         elsif self.title == "404"
           self.slug = "404"
+          self.parent = nil
         elsif self.root?
           self.slug = "/"
           self.parent = nil

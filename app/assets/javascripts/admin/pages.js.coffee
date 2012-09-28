@@ -138,7 +138,7 @@ $(document).ready ->
         $('.spinner').css('top', 0)
 
     # Change page part nav name 
-    $('.page_part_name input').on 'change', ->
+    $('.page_part_name input').live 'change', ->
       pp_id = $(this).parent().siblings().last().children().first().attr 'value'
       page_part_nav_link = $('#page_parts_nav #' + pp_id + '_nav').find('a')
       old_val = page_part_nav_link.html()

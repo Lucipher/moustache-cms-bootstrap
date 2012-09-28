@@ -9,15 +9,15 @@ class Layout
   field :content
 
   # -- Index -------------------------------
-  index :name
+  index :name => 1
   
   #-- Associations-----------------------------------------------
   has_many :pages, :dependent => :nullify
   has_many :article_collections
   has_many :articles
   belongs_to :site
-  belongs_to :created_by, :class_name => "User"
-  belongs_to :updated_by, :class_name => "User"
+  belongs_to :created_by, :class_name => "User", :inverse_of => :layouts_created
+  belongs_to :updated_by, :class_name => "User", :inverse_of => :layouts_updated
   
   #-- Validations -----------------------------------------------
   before_save :format_content
@@ -29,7 +29,7 @@ class Layout
   validates_presence_of :content, :created_by_id, :updated_by_id, :site_id
 
   # -- Scopes ----
-  scope :all_from_current_site, lambda { |current_site| { :where => { :site_id => current_site.id }} }
+  scope :all_from_current_site, ->(current_site) { where(:site_id => current_site.id) }
 
   #-- Private Instance Methods ----------------------------------
   private 
