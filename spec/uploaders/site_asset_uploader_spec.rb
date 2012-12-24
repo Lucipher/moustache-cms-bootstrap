@@ -17,39 +17,15 @@ describe SiteAssetUploader do
   
   after do
     SiteAssetUploader.enable_processing = false
-    @uploader.remove!
+    AssetFixtureHelper.remove_asset!(File.join(Rails.root, 'public', @uploader.store_dir))
   end 
-  
-  describe "before_filer" do
-    describe "#remember_cache_id" do
-      it "should assign file cache_id" do
-        @uploader.instance_variable_get(:@cache_id_was).should_not be_nil
-      end  
-    end                    
-  end                                                                  
-       
-  describe "after_filter" do
-    describe "delete_tmp_dir" do
-      it "should delete the tmp directory" do     
-        File.exist?(File.join(Rails.root, "spec", "tmp", @uploader.cache_dir, @uploader.instance_variable_get(:@cache_id_was))).should be_false
-      end
-    end  
-  end
   
   it "should set the storage directory" do
     @uploader.store_dir.should == "site_assets/#{@uploader.model._parent.site_id}/#{@uploader.model._parent.name}"
-  end
-  
-  it "should change the uploaded filename to the name of the site_asset" do
-    @uploader.filename.should =~  /^foobar.png$/
   end
   
   it "should white list these extenstiosn" do
     @uploader.extension_white_list.should == %w(jpg jpeg gif png pdf mp4 m4v ogv webm flv otf)
   end       
   
-  
-  it "should return true when the file is an image" do
-    @uploader.image?(@uploader.file).should be_true
-  end
 end

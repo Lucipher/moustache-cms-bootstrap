@@ -13,12 +13,12 @@ public/site_assets/*
 public/uploads
 public/theme_assets/**/*
 public/authors/**/*
+public/base_assets/*
 public/cached
 public/assets
 spec/tmp/**/*
 config/mongoid_production.yml
 config/deploy.rb
 config/unicorn.conf
-lib/moustache_cms/mustache/custom_tags.rb
 db/seeds_old.rb
 lib/moustache_cms/mustache/custom_templates/nav_for_faculty.haml

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem "rails", "3.2.8"   
+gem "rails", "3.2.9"   
 
 group :assets do
   gem "sass-rails", "~> 3.2.3"
@@ -28,6 +28,7 @@ gem "RedCloth", "~> 4.2"
 gem "redcarpet", "~> 2.0"
 gem "mime-types"
 gem "kaminari"
+# gem "rakismet" #uncomment to spam filter comments on articles
 
 gem "unicorn"
 
@@ -43,6 +44,7 @@ group :development, :test do
   gem "syntax"   
   gem "relish"
   gem "guard"
+  gem 'rb-fsevent', '~> 0.9.1'
   gem "guard-cucumber", :git => "git://github.com/netzpirat/guard-cucumber.git"
   gem "guard-rspec"
   gem "guard-spork"

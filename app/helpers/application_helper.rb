@@ -55,21 +55,29 @@ module ApplicationHelper
   def header_content(partial_name, options={}, &block)
     options[:class_name] = nil if options[:class_name].nil?
     if options[:object].class == Symbol
-      title = options[:title].nil? ? options[:object].to_s.underscore.titleize.pluralize : options[:title]
+      title = title_for_header(options)
       options.merge!(:body => capture(&block), :title => title)
     elsif options[:object].new_record?
-      options.merge!(:body => "", :title => "Create New #{options[:object].class.name.underscore.titleize}")
+      options.merge!(:body => "", :title => "Create A New #{object_class_to_title(options[:object])}")
     else
-      if block_given?
-        if options[:title].nil?
-          title = options[:show] == true ? "#{options[:object].class.name.underscore.titleize}" : "Editing #{options[:object].class.name.underscore.titleize}"
-        else
-          title = options[:title]
-        end
-        options.merge!(:body => capture(&block), :title => "#{title} #{view_identifier(options[:object]).titleize}")
-      end
+      title = title_for_header(options)
+      options.merge!(:body => capture(&block), :title => "#{title} #{view_identifier(options[:object]).titleize}")
     end
     concat(render(:partial => partial_name, :locals => options))
+  end
+
+  def title_for_header(options)
+    if options[:title]
+      options[:title]
+    elsif options[:object].class == Symbol
+      options[:object].to_s.underscore.titleize.pluralize
+    else
+      object_class_to_title(options[:object])
+    end
+  end
+
+  def object_class_to_title(object)
+    object.class.name.underscore.titleize  
   end
 
   def inner_content(partial_name, &block)
@@ -78,10 +86,10 @@ module ApplicationHelper
   end
 
   def view_identifier(object)
-    if object.respond_to?(:title)
-      object.title
-    elsif object.respond_to?(:full_name)
+    if object.respond_to?(:full_name)
       object.full_name 
+    elsif object.respond_to?(:title)
+      object.title
     else
       object.name
     end

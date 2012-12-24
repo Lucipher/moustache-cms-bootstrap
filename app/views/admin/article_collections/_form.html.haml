@@ -14,16 +14,27 @@
           
             = f.label "layout_id", mark_required('Layout')
             = f.collection_select :layout_id, Layout.all, :id, :name
+
             %span.help-block.info The layout to use when displaying an article from it's permalink.
           .control-group
             %label Permalink Prefix
             = f.label :permlink_prefix_true, :class => "radio" do
               = f.radio_button :permalink_prefix, 'true'
               Add prefix to path
+            
             = f.label :permlink_prefix_false, :class => "radio" do
               = f.radio_button :permalink_prefix, 'false'
               Do not add prefix to path
+
             %span.help-block.info Adding a prefix will add the article collection name as a route prefix to the articles generated permalink. For example adding the prefix to a collection named 'foo' will make the permalink for the article titled 'article1' with a publication date of January 1st, 2012, '/foo/2012/1/1/article1'. Without the prefix the permalink would be '/2012/1/1/article1'.
+
+            %label Comments
+            = f.label :commentable_true, :class => "radio" do
+              = f.radio_button :commentable, 'true'
+              Comments ON
+            = f.label :commentable_false, :class => "radio" do
+              = f.radio_button :commentable, 'false'
+              Comments OFF
   .accordion
     .accordion-group
       .accordion-heading

@@ -9,6 +9,7 @@ MoustacheCms::Application.routes.draw do
     resources :users do
       member do
         get :change_password
+        put :update_password
       end
     end
     resources :layouts
@@ -22,12 +23,16 @@ MoustacheCms::Application.routes.draw do
       resources :page_parts, :except => [:index, :new, :update] 
     end
 
-    resources :authors
+    resources :authors do
+      resources :custom_fields, :only => [:new, :destroy]
+    end
+
 
     resources :article_collections do
       resources :articles do
         get 'page/:page', :action => :index, :on => :collection
         get :new_meta_tag, :on => :collection
+        get :new_author, :on => :member
         put :preview, :as => :preview
         resources :meta_tags, :except => [:index, :show] 
       end
@@ -52,6 +57,8 @@ MoustacheCms::Application.routes.draw do
       resources :domain_names, :except => [:index, :show]
     end
   end
+
+  resource :comments
 
   match "/admin" => redirect("/admin/pages")
 

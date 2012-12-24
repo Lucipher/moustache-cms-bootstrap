@@ -124,7 +124,8 @@ end
 
 When /^I delete the page part baz$/ do
   step %{I edit the page part baz}
-  click_link 'Delete'
+  # click_link xpath.finko
+  page.find(".delete_page_part").click_link('Delete')
   dialog_ok
 end
 
@@ -201,6 +202,7 @@ Then /^it should be the selected page part$/ do
 end
 
 Then /^the page part baz should be removed from the page$/ do
+  pause_for_step
   page.should_not have_content 'baz'
 end
 

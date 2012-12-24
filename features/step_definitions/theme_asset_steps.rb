@@ -21,7 +21,7 @@ end
 
 When /^I create a theme asset named "([^"]*)"$/ do |filename|
   click_link 'Add Some Theme Assets to the theme Blog'
-  attach_file :theme_asset, File.join(Rails.root, 'spec', 'fixtures', 'assets', filename) 
+  attach_file 'Asset Source*', File.join(Rails.root, 'spec', 'fixtures', 'assets', filename) 
   click_button 'Save Theme Asset'
 end
 
@@ -39,7 +39,6 @@ When /^I edit the theme asset "([^"]*)" and delete it$/ do |asset_name|
     Then "#{asset_name}" should be listed within the image assets
   }
   click_link asset_name
-  click_link "Delete Theme Asset"
 end
 
 When /^I delete the theme asset "([^"]*)" from the theme assets list$/ do |asset_name|
@@ -78,7 +77,6 @@ Then /^"([^"]*)" should be listed within the javascript assets$/ do |asset_name|
     step %{I should see "#{asset_name}" in the theme assets list} 
   end
 end
-
 
 Then /^"([^"]*)" should be listed within the css assets$/ do |asset_name|
   within '.theme_asset_css' do

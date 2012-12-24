@@ -8,16 +8,16 @@
         - if admin?
           = f.label :username, "Username<abbr title='required' class='required'>*</abbr>".html_safe
           = f.text_field :username 
-
+        
         = f.label :firstname, "Firstname<abbr title='required' class='required'>*</abbr>".html_safe
         = f.text_field :firstname
-
+      
         = f.label :lastname, "Lastname<abbr title='required' class='required'>*</abbr>".html_safe
         = f.text_field :lastname
-
+        
         = f.label :email, "Email<abbr title='required' class='required'>*</abbr>".html_safe
         = f.email_field :email
-      
+        
         - if new_password_fields?
           = f.label :password, "Password<abbr title='required' class='required'>*</abbr>".html_safe
           = f.password_field :password
@@ -30,19 +30,13 @@
           .role
             %p.label_for Role <abbr title='required' class='required'>*</abbr>
             .inline.form-inline
-              = f.label :role_admin, :class => "radio" do
-                = f.radio_button :role, 'admin'
-                Admin
-              
-              = f.label :role_designer, :class => "radio" do
-                = f.radio_button :role, 'designer'
-                Designer
-              
-              = f.label :role_editor, :class => "radio" do
-                = f.radio_button :role, 'editor'
-                Editor
+              - User::Roles.each do |role|
+                = f.label "role_#{role}".to_sym, class: "radio" do
+                  = f.radio_button :role, role.to_s
+                  = role.capitalize
+        
         = f.label :time_zone
         = f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)"
-        #submit_fields.form-actions
-          = f.submit button_label, :class => "submit btn btn-success"
-          = link_to "Cancel", [:admin, :users], :class => "cancel"
+
+        = f.submit button_label, :class => "submit btn btn-success"
+        = link_to "Cancel", [:admin, :users], :class => "cancel"

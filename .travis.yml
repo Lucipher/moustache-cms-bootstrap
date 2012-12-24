@@ -13,3 +13,4 @@ services:
 branches:
   only:
     - master
+    - travis_broken

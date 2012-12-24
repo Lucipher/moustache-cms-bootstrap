@@ -166,6 +166,10 @@ $(document).ready ->
             answer = $.rails.confirm('Deleteing the page ' + page_name + ' will delete the page and all child pages it is the parent of!')
         answer
 
+    # Add custom preview event handler
+    $('.preview').on 'preview', (event, href) ->
+      window.location.href = href
+
     # Handle page preview   
     $('.preview').click (e) ->
       e.preventDefault()
@@ -175,7 +179,13 @@ $(document).ready ->
       action = form.attr('action').split('/')
       page_id = action[action.length - 1]
       url = '/admin/pages/' + page_id + '/preview'
+      disabled = form.find(":input[type=hidden]")
+      disabled.splice(0,3) #remove hidden fields needed to submit form for rails 
+      disabled.each -> $(@).attr('disabled', 'disabled') # disable hidden form elements so they are not serialized
       $.post url, form.serialize(), -> 
+        $('.preview').trigger 'preview', [$('.preview').attr('href')]
+      disabled.each -> $(@).removeAttr('disabled') # enable form elements so they can be submit for an update
+
         
     # Display Moustache Tags Helpers  
     $('.documentation').fancybox 

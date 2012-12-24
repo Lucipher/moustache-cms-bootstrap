@@ -4,7 +4,7 @@ class Admin::ArticlesController < AdminBaseController
   load_and_authorize_resource :article, :through => :article_collection, :except => :new_meta_tag
 
   respond_to :html, :xml, :json
-  respond_to :js, :only => [:index, :preview, :new_meta_tag]
+  respond_to :js, :only => [:index, :preview, :new_meta_tag, :new_author]
 
   # GET /admin/article_collections/1/articles
   def index
@@ -15,6 +15,7 @@ class Admin::ArticlesController < AdminBaseController
   # GET /admin/article_collections/1/articles/new
   def new
     @article.build_current_state
+    @article.commentable = @article_collection.commentable
     respond_with(:admin, @article_collection, @articles)
   end
 
@@ -24,8 +25,7 @@ class Admin::ArticlesController < AdminBaseController
 
   # POST /admin/article_collections/1/articles
   def create
-    @article.site = @current_site
-    created_updated_by_for @article
+    assign_protected_attributes @article
     respond_with(:admin, @article_collection, @article) do |format|
       if @article.save
         format.html { redirector [:edit, :admin, @article_collection, @article], [:admin, @article_collection, :articles], "Successfully created the article #{@article.title} in the collection #{@article_collection.name}" }
@@ -35,7 +35,7 @@ class Admin::ArticlesController < AdminBaseController
 
   # PUT /admin/article_collections/1/articles/1
   def update
-    @article.updated_by = @current_admin_user
+    assign_updated_by @article
     respond_with(:admin, @article_collection, @article) do |format| 
       if @article.update_attributes(params[:article])
         format.html { redirector [:edit, :admin, @article_collection, @article], [:admin, @article_collection, :articles], "Successfully updated the article #{@article.title} in the collection #{@article_collection.name}" }
@@ -62,6 +62,11 @@ class Admin::ArticlesController < AdminBaseController
     @article = @article.dup
     @article.assign_attributes(params[:article])
     @article.save_preview
+  end
+
+  def new_author
+    @current_site = current_site
+    @article = Article.find(params[:id])
   end
 
 end

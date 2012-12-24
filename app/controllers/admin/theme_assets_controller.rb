@@ -28,15 +28,14 @@ class Admin::ThemeAssetsController < AdminBaseController
   
   # POST /admin/theme_assets
   def create
+    process_create_params
     creator_updator_set_id @theme_asset    
-    try_theme_asset_cache 
-    respond_with(:admin, @theme_collection, @theme_asset) do |format| 
-      if @theme_asset.save
-        format.html { redirect_to [:admin, @theme_collection, :theme_assets], :notice => "Successfully created the theme asset #{@theme_asset.name}"  }
-      end
+    # try_theme_asset_cache(:theme_asset, @theme_asset) 
+    @theme_asset.asset = params[:file]
+    asset_create_respond_with(@theme_collection, @theme_asset, :theme_assets) do
+      "Successfully created the theme asset #{@theme_asset.name}"
     end
   end    
-  
   # GET /admin/theme_asset/1/edit
   def edit
     respond_with(:admin, @theme_collection, @theme_asset)
@@ -49,7 +48,7 @@ class Admin::ThemeAssetsController < AdminBaseController
     if params[:theme_asset_file_content]
       md5_update(params[:theme_asset_file_content]) 
     else
-      change_name_md5
+      change_name_md5(@theme_asset, params[:theme_asset][:name])
     end
     respond_with(:admin, @theme_collection, @theme_asset) do |format|
       if @theme_asset.update_file_content(params[:theme_asset_file_content]) && @theme_asset.update_attributes(params[:theme_asset]) 
@@ -65,24 +64,20 @@ class Admin::ThemeAssetsController < AdminBaseController
   end   
   
   private
-    def try_theme_asset_cache 
-      if !params[:theme_asset][:asset_cache].empty? && params[:theme_asset][:asset].nil?
-        set_from_cache(:cache_name => params[:theme_asset][:asset_cache], :asset => @theme_asset)
-      end
-    end
 
-    def md5_update(data)
-      md5 = ::Digest::MD5.hexdigest(data)
-      @theme_asset.filename_md5 = "#{@theme_asset.name}-#{md5}.#{@theme_asset.asset.file.extension}"
-    end
+  def md5_update(data)
+    md5 = ::Digest::MD5.hexdigest(data)
+    @theme_asset.filename_md5 = "#{@theme_asset.name}-#{md5}.#{@theme_asset.asset.file.extension}"
+  end
 
-    def change_name_md5
-      if @theme_asset.name_changed?
-        @theme_asset.filename_md5_old = @theme_asset.filename_md5_was
-        old_name_split = @theme_asset.filename_md5_was.split('-')
-        hash_ext = old_name_split.pop
-        hash = hash_ext.split('.').shift
-        @theme_asset.filename_md5 = "#{@theme_asset.name.split('.').first}-#{hash}.#{@theme_asset.asset.file.extension}"
-      end
+  def process_name(original_filename)
+    @theme_asset.name = original_filename
+  end
+
+  def process_create_params
+    if params[:theme_asset].nil?
+      process_name(params[:name])
     end
+  end
+
 end

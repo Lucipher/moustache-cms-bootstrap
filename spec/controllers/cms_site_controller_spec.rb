@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
+require 'spec_helper'
 
 describe CmsSiteController do
   render_views
@@ -6,8 +6,8 @@ describe CmsSiteController do
   # -- GET dynamic_page ----------------------------------------------- 
   describe "GET dynamic_page" do
     
-    let(:current_site) { FactoryGirl.create(:site)}
-    let(:layout) { FactoryGirl.create(:layout, :site => current_site) }
+    let(:current_site) { FactoryGirl.build(:site)}
+    let(:layout) { FactoryGirl.build(:layout, :site => current_site) }
     let(:page) { mock_model(Page, :layout => layout, :published? => true).as_null_object }
     
     before(:each) do

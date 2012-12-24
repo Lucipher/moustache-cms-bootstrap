@@ -2,6 +2,9 @@ class Page
   include Mongoid::Document 
   include Mongoid::Timestamps
  
+  include MoustacheCms::Siteable
+  include MoustacheCms::CreatedUpdatedBy
+  include MoustacheCms::StateSetable
   include MoustacheCms::Published
   include MoustacheCms::DefaultMetaTags
 
@@ -15,8 +18,6 @@ class Page
                   :full_path,
                   :breadcrumb,
                   :editor_ids,
-                  :current_state, 
-                  :current_state_attributes,
                   :layout_id,
                   :page_parts,
                   :page_parts_attributes,
@@ -35,16 +36,12 @@ class Page
   index :full_path => 1
   
   # -- Associations-------------------------
-  embeds_one :current_state, :as => :publishable, :cascade_callbacks => true 
   embeds_many :custom_fields, :as => :custom_fieldable
   embeds_many :page_parts 
-  belongs_to :site
   belongs_to :layout
-  belongs_to :created_by, :class_name => "User", :inverse_of => :pages_created
-  belongs_to :updated_by, :class_name => "User", :inverse_of => :pages_updated
+  created_updated(:pages)
   has_and_belongs_to_many :editors, :class_name => "User", :inverse_of => :pages
   
-  accepts_nested_attributes_for :current_state
   accepts_nested_attributes_for :custom_fields
   accepts_nested_attributes_for :page_parts
   
@@ -59,12 +56,10 @@ class Page
   validates :breadcrumb,
             :presence => true
 
-  validates_presence_of :site_id,
-                        :slug, 
+  validates_presence_of :slug, 
                         :current_state,
-                        :layout_id, 
-                        :created_by_id, 
-                        :updated_by_id                    
+                        :layout_id,
+                        :site_id
 
   # -- Callbacks -----------------------------------------------
   before_validation :format_title, :slug_set, :full_path_set, :breadcrumb_set
@@ -92,15 +87,22 @@ class Page
     self.where(:slug => slug).first
   end
 
+  def self.find_homepage(site)
+    roots = self.where(:site => site).roots  
+    roots.where(full_path: '/').first
+  end
+
   # -- Instance Methods -----------------------------------------------  
-  def home_page?
+  def homepage?
     self.full_path == '/' ? true : false
   end
 
-  def save_preview
+
+  def save_preview(site)
     self.write_attribute(:preview, true)
     self.slug = self.slug + '?preview=true'
-    self.save
+    Page.where(site_id: site.id, slug: self.slug).destroy # destroy a preview page if one exists 
+    self.save!
   end
 
   def delete_association_of_editor_id(editor_id)
@@ -133,34 +135,31 @@ class Page
     
     # slug is "foobar" in http://example.com/10/02/2011/foobar
     def slug_set
-      unless self.title.nil?
+      unless self.title.nil? || self.slug =~ /\?preview=true$/
         if self.site_id.nil?
           self.slug = ""
-        elsif self.title == "404"
-          self.slug = "404"
-          self.parent = nil
         elsif self.root?
-          self.slug = "/"
-          self.parent = nil
-        elsif self.slug =~ /\?preview=true$/
-          self.slug = self.slug
-        elsif self.slug.blank?
-          self.slug = self.title.gsub('_', '-')
-          self.slug = self.slug.parameterize
+          set_root_page_slug
         else
-          self.slug = self.slug.gsub('_', '-')
-          self.slug = self.slug.parameterize
+          set_child_page_slug
         end
       end
     end
-  
+
+    def set_root_page_slug
+      self.parent = nil
+      self.title == '404' ? self.slug = '404' : self.slug = '/'
+    end
+
+    def set_child_page_slug
+      self.slug = self.slug.blank? ? self.title.gsub('_', '-') : self.slug.gsub('_', '-') 
+
+      self.slug = self.slug.parameterize
+    end
+      
     # full_path is "/foobar/baz/qux" in http://example.com/foobar/baz/qux
     def full_path_set
-      if self.slug == "404"
-        self.full_path = "404"
-      else
-        self.full_path = self.parent ? "#{self.parent.full_path}/#{self.slug}".squeeze("/") : "/"
-      end
+      self.full_path = self.parent ? "#{self.parent.full_path}/#{self.slug}".squeeze("/") : "/#{self.slug}".squeeze("/")
     end
   
     def breadcrumb_set

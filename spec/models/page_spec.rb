@@ -12,10 +12,6 @@ describe Page do
   # --  Associations -----------------------------------------------
   describe "Associations" do
     
-    it "should embed one current state" do
-      @page.should embed_one :current_state
-    end
-
     it "should embed_many meta_tags" do 
       @page.should embed_many :meta_tags
     end 
@@ -47,7 +43,6 @@ describe Page do
     it "should have many editors" do
       @page.should have_and_belong_to_many(:editors).of_type(User)
     end
-
   end
 
   
@@ -104,11 +99,6 @@ describe Page do
       @page.should_not be_valid
     end
 
-    it "should not be valid without a current state" do
-      @page.current_state = nil
-      @page.should_not be_valid
-    end
-    
     it "should not be valid without a layout" do
       @page.layout_id = nil
       @page.should_not be_valid
@@ -151,7 +141,7 @@ describe Page do
       
       it "should set the full path to '404' when the page title is '404" do
         page2 = FactoryGirl.create(:page, :title => "404", :site => site, :layout => layout, :created_by => user, :updated_by => user)
-        page2.full_path.should == "404"
+        page2.full_path.should == "/404"
       end
     end
     
@@ -257,21 +247,27 @@ describe Page do
     end
 
     describe "Page#find_by_slug" do
-      it "should find the pae by the slug" do
+      it "should find the page by the slug" do
         Page.find_by_slug(@page.slug).should == @page
+      end
+    end
+
+    describe "Page#find_homepage" do
+      it "should return the homepage for the site" do
+        Page.find_homepage(site).should == parent
       end
     end
   end
   
   # -- Instance Methods -----------------------------------------------
   context "Instance Methods" do
-    describe "home_page?" do
+    describe "homepage?" do
       it "should return true if the page is the home page" do
-        parent.home_page?.should be_true
+        parent.homepage?.should be_true
       end
 
       it "should return false if the page is not the home page" do
-        @page.home_page?.should be_false
+        @page.homepage?.should be_false
       end
     end
 

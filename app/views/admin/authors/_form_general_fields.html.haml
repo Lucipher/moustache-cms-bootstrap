@@ -17,7 +17,16 @@
         = f.label :lastname, "Lastname<abbr title='required' class='required'>*</abbr>".html_safe
         = f.text_field :lastname
 
-        = f.label :image, "Author Photo<abbr title='required' class='required'>*</abbr>".html_safe
+        = f.label :honorific_suffix 
+        = f.text_field :honorific_suffix
+      
+        = f.label :title
+        = f.text_field :title
+      
+        = f.label :organization
+        = f.text_field :organization
+
+        = f.label :image, "Author Image"
         = f.file_field :image, :class => "file_field"
         = f.hidden_field :image_cache
 
@@ -32,6 +41,8 @@
 
         = f.label :profile
         = f.text_area :profile, :class => "span6"
+
+        = render :partial => 'custom_fields', :locals => {:f => f}
 
         #submit_fields.form-actions
           = f.submit button_label, :class => "submit btn btn-success"

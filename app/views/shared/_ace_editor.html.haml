@@ -1,6 +1,9 @@
 %p.label_for.ace_label Content
 %select.line_wrap
-  = grouped_options_for_select({'Line Wrap' => ['No wrap', 'Soft wrap']})
+  - if @article.nil?
+    = grouped_options_for_select({'Line Wrap' => ['No wrap', 'Soft wrap']}, selected: 'No wrap')
+  - else  
+    = grouped_options_for_select({'Line Wrap' => ['No wrap', 'Soft wrap']}, selected: 'Soft wrap')
 .doc
   - if @article.nil?
     = link_to 'Available Tags', '/mustache_tags.html', :class => 'mustache_tags fancybox.iframe documentation btn btn-mini btn-warning'

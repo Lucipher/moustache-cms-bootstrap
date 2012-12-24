@@ -16,7 +16,16 @@
         %span.help-block Leave this blank to use the layout specified in the article collection properties. Selecting a layout will override the layout for the collection.
       
         = f.fields_for :current_state do |builder|
+
           = builder.label "name", mark_required('Status')
           = builder.collection_select :name, CurrentState.all, :id, :name
         
           = builder.hidden_field :id
+
+          = f.label :commentable_true, class: 'radio' do
+            = f.radio_button :commentable, 'true'
+            Comments ON for this article
+          
+          = f.label :commentable_false, class: 'radio' do
+            = f.radio_button :commentable, 'false'
+            Comments OFF for this article

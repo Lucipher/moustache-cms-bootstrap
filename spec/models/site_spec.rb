@@ -6,6 +6,7 @@ describe Site do
     @site = FactoryGirl.create(:site)  
     @user = FactoryGirl.create(:user, :site => @site)    
     @layout = FactoryGirl.create(:layout, :site => @site, :created_by => @user, :updated_by => @user) 
+    @homepage = FactoryGirl.create(:page, :site_id => @site.id, :layout_id => @layout.id, :created_by_id => @user.id, :updated_by_id => @user.id, :editor_ids => [@user.id], :slug => '/', :full_path => '/') 
   end
   
   after(:each) do
@@ -78,6 +79,10 @@ describe Site do
     it "should embed many meta_tags" do
       @site.should embed_many :meta_tags
     end
+
+    it "should have many moustache assets" do
+      @site.should have_many(:moustache_assets)
+    end
   end
   
   # -- Callbacks ---
@@ -110,9 +115,13 @@ describe Site do
     end
   end
   
-
   # -- Instance Methods ------------------------------------------------------
   describe "instance methods" do
+    describe "#homepage" do
+      it "should return the homepage for the site" do
+        @site.homepage.should == @homepage
+      end
+    end
     describe "#full_subdomain" do
       it "should return the full domain" do
         @site.full_subdomain.should == "#{@site.subdomain}.com"
@@ -126,17 +135,24 @@ describe Site do
         @site.domain_names.should have(2).items
       end
     end
+
+    describe "#find_page" do
+      it "should return the page by id" do
+        @site.pages << page = FactoryGirl.create(:page, parent: @homepage, title: "foobar", site: @site, layout: @layout, created_by: @user, updated_by: @user, slug: 'foobar', full_path: '/foobar')
+        @site.find_page(page.id).should == page  
+      end
+    end
     
     describe "#page_by_title" do
       it "should return the page by the title" do   
-        @site.pages << page = FactoryGirl.create(:page, :title => "foobar", :site => @site, :layout => @layout, :created_by => @user, :updated_by => @user)
+        @site.pages << page = FactoryGirl.create(:page, parent: @homepage, title: "foobar", site: @site, layout: @layout, created_by: @user, updated_by: @user, slug: 'foobar', full_path: '/foobar')
         @site.page_by_title(page.title).should == page
       end
     end
     
     describe "#page_by_full_path" do
       it "should return the page" do    
-        @site.pages << page = FactoryGirl.create(:page, :site => @site, :layout => @layout, :created_by => @user, :updated_by => @user)
+        @site.pages << page = FactoryGirl.create(:page, parent: @homepage, title: "foobar", site: @site, layout: @layout, created_by: @user, updated_by: @user, slug: 'foobar', full_path: '/foobar')
         @site.page_by_full_path(page.full_path).should == page
       end
     end
@@ -168,7 +184,7 @@ describe Site do
     describe "#article_collection_by_name" do
       it "should return the article collection by the name" do
         article_collection = FactoryGirl.create(:article_collection, :site => @site, :name => "news")
-        @site.article_collection_by_name('news').should == article_collection
+        @site.article_collection_by_name('news').first.should == article_collection
       end
     end
 
@@ -210,6 +226,14 @@ describe Site do
         meta_tag = FactoryGirl.build(:meta_tag, :name => 'foobar')
         @site.meta_tags << meta_tag
         @site.meta_tag_by_name('foobar').should == meta_tag
+      end
+    end
+
+    describe "#theme_collecton_by_name(theme_name)" do
+      it "should return the theme coolection with the name" do
+        theme_collection = FactoryGirl.build(:theme_collection, :name => 'foobar')
+        @site.theme_collections << theme_collection
+        @site.theme_collection_by_name('foobar').should == theme_collection  
       end
     end
 

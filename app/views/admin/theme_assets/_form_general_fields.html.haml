@@ -1,13 +1,5 @@
-.accordion
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{:data => {:toggle => "collapse", :target => "#general_fields"}} 
-        General
-    #general_fields.accordion-body.collapse.in
-      .accordion-inner
-        = f.label :name, "Name"
-        = f.text_field :name
-
-        = f.label :description
-        = f.text_area :description, :class => "span6", :rows => "3"   
-
+= render :partial => 'new_theme_asset', :object => f, :locals => { :theme_asset => @theme_asset }
+- unless @theme_asset.new_record?
+  = render :partial => 'edit_asset'
+  = render :partial => 'form_custom_fields', :locals => { :f => f }
+= render :partial => 'form_submit', :locals => { :f => f, :button_label => button_label }

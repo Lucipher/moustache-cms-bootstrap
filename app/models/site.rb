@@ -12,7 +12,7 @@ class Site
   field :domain_names, :type => Array, :default => []
   
   # -- Index ---------------------------------------
-  index :domain_names => 1
+  index({ domain_names: 1 }, { unique: true })
   
   # -- Associations ---------------------------------------
   has_many :users, :dependent => :destroy
@@ -24,6 +24,7 @@ class Site
   has_many :article_collections, :dependent => :destroy
   has_many :articles, :dependent => :destroy
   has_many :theme_collections, :dependent => :destroy
+  has_many :moustache_assets 
     
 
   # -- Validations ----------------------------------------
@@ -43,22 +44,19 @@ class Site
   scope :match_domain, ->(domain) { any_in(:domain_names => [*domain]) }
  
   # -- Instance Methods ----------------------------------------
+  def homepage
+    self.pages.find_homepage(self)
+  end
   def full_subdomain
     "#{self.subdomain}.#{self.default_domain}"
   end
   
   def add_subdomain_to_domain_names
     self.domain_names ||= []
-    if self.subdomain_changed? || self.default_domain_changed?
-      if self.subdomain_was.nil?
-        self.domain_names << self.full_subdomain
-      else
-        domain_names.delete(old_domain) if domain_names.include?(old_domain)
-        (self.domain_names << self.full_subdomain).uniq!
-      end
-    else
-      (self.domain_names << self.full_subdomain).uniq!
-   end
+    if domain_names.include?(old_domain)
+      domain_names.delete(old_domain)
+    end
+    (self.domain_names << self.full_subdomain).uniq!
   end
 
   def add_full_subdomain(domain)
@@ -66,6 +64,10 @@ class Site
   end
 
   alias :add_domain :add_full_subdomain
+
+  def find_page(id)
+    self.pages.find(id)
+  end
   
   def page_by_full_path(path)   
     self.pages.find_by_full_path(path)
@@ -80,7 +82,7 @@ class Site
   end
 
   def article_collection_by_name(name)
-    self.article_collections.where(:name => name).first
+    self.article_collections.where(:name => name)
   end
 
   def articles_by_collection_name(name)
@@ -104,20 +106,22 @@ class Site
   end
   
   def css_file_by_name(theme_name, css_name)
-    theme_collection = ThemeCollection.where(:name => theme_name, :site_id => self.id).first
+    theme_collection = theme_collection_by_name(theme_name)
     theme_collection.theme_assets.css_files.where(:name => css_name).first
   end 
 
   def js_file_by_name(theme_name, js_name)
-    theme_collection = ThemeCollection.where(:name => theme_name, :site_id => self.id).first
-    #theme_collection = ThemeCollection.first(:conditions => {:name => theme_name, :site_id => self.id})
+    theme_collection = theme_collection_by_name(theme_name)
     theme_collection.theme_assets.js_files.where(:name => js_name).first
   end 
   
   def site_asset_by_name(asset_collection, file_name)
     asset_collection = AssetCollection.where(:name => asset_collection, :site_id => self.id).first
-    #asset_collection = AssetCollection.first(:conditions => {:name => asset_collection, :site_id => self.id})
     asset_collection.site_assets.where(:name => file_name).first
+  end
+
+  def theme_collection_by_name(theme_name)
+    ThemeCollection.where(:name => theme_name, :site_id => self.id).first
   end
 
   def meta_tag_by_name(name)

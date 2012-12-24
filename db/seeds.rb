@@ -1,15 +1,16 @@
-site = Site.find_or_create_by(:name => "Moustache CMS", :subdomain => "moustache-cms") do |s|
+site = Site.find_or_create_by(:name => "Moustache CMS Bootstrap", :subdomain => "moustache-cms-bootstrap") do |s|
   s.default_domain = "dev"
 end
 
 site.domain_names << '127.0.0.1'
 site.domain_names << 'localhost'
 
-admin = User.find_or_create_by(:firstname => "Admin", :lastname => "Moustache", :email => "admin@moustachecms.org") do |user|
+admin = User.find_or_create_by(:firstname => "Admin", :lastname => "Moustache", :email => "greg@geptechstudios.com") do |user|
   user.username = "admin"
   user.role = "admin"
   user.site_id = site.id
   user.password = "moustache"
+  user.time_zone = MoustacheCms::Application.config.time_zone
 end
 
 # Create Layout
@@ -30,7 +31,7 @@ if Page.root.nil?
                 p.editor_ids = [ admin.id ]
                 p.created_by_id = admin.id
                 p.updated_by_id = admin.id
-                p.current_state = CurrentState.find("draft")
+                p.current_state = CurrentState.draft
                 p.page_parts = [ PagePart.new(:name => "content", :content => "This is the home page!", :filter_name => Filter.find_by_name("html").name) ]
   end           
 end

@@ -11,11 +11,9 @@
           = f.label :name, "Name"
           = f.text_field :name
 
-          = f.label :tags
-          = f.text_field :tags
+          = f.label :tag_list
+          = f.text_field :tag_list
 
           = render :partial => 'site_asset'
         #submit_fields.form-actions
-          = f.submit button_label, :class => "submit btn btn-success"
-          = link_to "Cancel", [:admin, @asset_collection], :class => "cancel"
-
+          = render :partial => 'form_submit', :locals => { :f => f, :button_label => button_label }

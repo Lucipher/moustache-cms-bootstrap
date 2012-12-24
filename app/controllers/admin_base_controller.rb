@@ -41,9 +41,14 @@ class AdminBaseController < ApplicationController
       end
     end
 
-    
-  private
-
+    def asset_create_respond_with(collection, asset, redirect, &block)
+      respond_with(:admin, collection, asset) do |format|
+        if asset.save
+          format.html { redirect_to [:admin, collection, redirect.to_sym], :notice => yield }
+        end
+      end
+    end
+ 
     def redirector_path(object)
      params[:continue] ? [:edit, :admin, object] : [:admin, object.class.name.tableize.to_sym]
     end
@@ -74,5 +79,48 @@ class AdminBaseController < ApplicationController
     def set_admin_user_time_zone
       Time.zone = current_admin_user.time_zone if admin_user_signed_in?
     end
+
+    def assign_protected_attributes(object)
+      object.site = current_site
+      created_updated_by_for object
+    end
+
+    def save_and_assign_notice(object, notice)
+      assign_protected_attributes(object)
+      if object.save
+        flash[:notice] = notice
+      end
+    end
+
+    def assign_updated_by(object)
+      object.updated_by = @current_admin_user
+    end
+
+    def update_and_assign_notice(object, param, notice, notice_name)
+      assign_updated_by(object)
+      object.updated_by = @current_admin_user
+      if object.update_attributes(param)
+        flash[:notice] = notice + ' ' + object.send(notice_name)
+      end
+    end
+
+    def change_name_md5(the_asset, param_name)
+      the_asset.name = param_name
+      if the_asset.name_changed?
+        old_name_split = the_asset.filename_md5_was.split('-')
+        hash_ext = old_name_split.pop
+        hash = hash_ext.split('.').shift
+        the_asset.filename_md5 = "#{the_asset.name.split('.').first}-#{hash}.#{the_asset.asset.file.extension}"
+        generate_paths(the_asset)
+      end
+    end
+    
+
+    def generate_paths(the_asset)
+      the_asset.file_path_md5 = File.join(Rails.root, 'public', the_asset.asset.store_dir, '/', the_asset.filename_md5)
+      the_asset.url_md5 = "/#{the_asset.asset.store_dir}/#{the_asset.filename_md5}"
+      the_asset.file_path_md5_old = the_asset.file_path_md5_was if the_asset.file_path_md5_changed?
+    end    
+
 
 end

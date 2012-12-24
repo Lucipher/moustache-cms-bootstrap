@@ -8,7 +8,7 @@ class Admin::PagesController < AdminBaseController
 
   respond_to :html, :except => [:show, :sort, :new_meta_tag, :new_custom_field]
   respond_to :xml, :json
-  respond_to :js, :only => [:preview, :show, :edit, :destroy, :sort, :new_meta_tag, :new_custom_field]
+  respond_to :js, :only => [:show, :edit, :destroy, :sort, :new_meta_tag, :new_custom_field]
 
   def index
     page_created_updated
@@ -34,8 +34,7 @@ class Admin::PagesController < AdminBaseController
   end
    
   def create
-    @page.site = current_site
-    created_updated_by_for @page
+    assign_protected_attributes @page
     respond_with(:admin, @page) do |format|
       if @page.save
         set_page_cookies
@@ -47,7 +46,7 @@ class Admin::PagesController < AdminBaseController
   end
   
   def update
-    @page.updated_by = @current_admin_user
+    assign_updated_by @page
     @page_title_was =  @page.title
     respond_with(:admin, @page) do |format|
       if @page.update_attributes(params[:page]) 
@@ -68,13 +67,13 @@ class Admin::PagesController < AdminBaseController
   end
 
   def preview
-    @page = @page.dup
-    @page.assign_attributes(params[:page])
-    @page.save_preview
+    @page = Page.new(params[:page])
+    assign_protected_attributes(@page)
+    @page.save_preview(current_site)
   end
 
   def sort
-    @page = current_site.pages.find(params[:id])
+    @page = current_site.find_page(params[:id])
     @page.sort_children(params[:children])
     flash.now[:notice] = "Updated Page Positions"
   end
@@ -104,9 +103,9 @@ class Admin::PagesController < AdminBaseController
     def page_created_updated
       @page_created_updated_id = cookies[:page_created_updated_id]
       begin
-        @page = Page.where(:site_id => current_site.id).find(@page_created_updated_id) unless @page_created_updated_id.nil?
+        @page = current_site.find_page(@page_created_updated_id) unless @page_created_updated_id.nil?
       rescue
-        @page = Page.where(:site_id => current_site.id).first
+        @page = current_site.pages.first
       end
     end
 

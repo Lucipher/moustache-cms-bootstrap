@@ -30,6 +30,7 @@ describe Author do
       @author.should have_and_belong_to_many(:articles)
     end
 
+    it { should embed_many :custom_fields }
   end
 
   # -- Validations  -----------------------------------------------
@@ -48,10 +49,11 @@ describe Author do
       @author.should_not be_valid
     end
 
-    it "should not be valid without a image" do
-      @author.remove_image!
+    it "should not be valid without a site id" do
+      @author.site_id = nil
       @author.should_not be_valid
     end
+
   end
 
   # -- Before Save ---

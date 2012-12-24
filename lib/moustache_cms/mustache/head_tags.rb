@@ -2,21 +2,10 @@ module MoustacheCms
   module Mustache
     module HeadTags 
       
-      # -- Title ---- 
-      def title
-        engine = Haml::Engine.new(%{%title= title})
-        engine.render(nil, {:title => @page.title})
-      end   
-
-      def page_title
-        @page.title
-      end
-      alias_method :article_title, :page_title
-      
       # -- Css ----
       def stylesheet
         lambda do |text|
-          hash = Hash[*text.scan(/(\w+):([&.\w\s\-]+)/).to_a.flatten]
+          hash = parse_text(text) #Hash[*text.scan(/(\w+):([&.\w\s\-]+)/).to_a.flatten]
           attributes = style_attributes.merge(hash)
           file = @current_site.css_file_by_name(hash['theme_name'], hash['name'])
           unless file.nil?
@@ -56,10 +45,13 @@ module MoustacheCms
       
       # -- Meta Tags ----
       def meta_tag
-        lambda do |text|
-          engine = gen_haml('meta_tag.haml')
-          engine.render(nil, {:name => name, :content => meta_tag_name(text).content})
-        end
+        engine = gen_haml('meta_tag.haml')
+        engine.render(nil, {:name => name, :content => meta_tag_name(text).content})
+      end
+
+      def meta_tags_csrf
+        engine = gen_haml('meta_tags_csrf.haml')
+        engine.render(action_view_context, {:@controller => @controller})
       end
     
       def respond_to?(method)

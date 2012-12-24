@@ -3,6 +3,8 @@ class Article
   include Mongoid::Timestamps
   include Mongoid::MultiParameterAttributes
 
+  include MoustacheCms::Siteable
+  include MoustacheCms::StateSetable
   include MoustacheCms::Published
   include MoustacheCms::DefaultMetaTags
 
@@ -14,14 +16,13 @@ class Article
                   :permalink,
                   :slug,
                   :content,
-                  :current_state, 
-                  :current_state_attributes,
                   :filter_name,
-                  :authors,
+                  :author_ids,
                   :layout_id,
                   :tag_list,
                   :set_date,
-                  :date
+                  :date,
+                  :commentable
 
   # -- Fields -----------
   field :title
@@ -35,28 +36,23 @@ class Article
   field :author_ids, :type => Array
   field :set_date, :type => Boolean
   field :date, :type => Time
-
-  # taggable
+  field :commentable, type: Boolean, default: true
 
   # -- Index -----
   index :title => 1
   index :permalink => 1
 
   # -- Associations -------------
-  embeds_one :current_state, :as => :publishable, :cascade_callbacks => true
-  belongs_to :site
   belongs_to :article_collection
   belongs_to :created_by, :class_name => "User", :inverse_of => :articles_created
   belongs_to :updated_by, :class_name => "User", :inverse_of => :articles_updated
   belongs_to :layout, :class_name => "Layout"
   has_and_belongs_to_many :authors
+  embeds_many :comments
 
-  accepts_nested_attributes_for :current_state
+  accepts_nested_attributes_for :authors
 
   # -- Validations -----------------------------------------------
-  validates :site_id,
-            :presence => true
-
   validates :title,
             :presence => true
 
@@ -68,9 +64,6 @@ class Article
             :presence => true
 
   validates :article_collection_id,
-            :presence => true
-
-  validates :current_state,
             :presence => true
 
   validates :created_by_id,
@@ -92,7 +85,6 @@ class Article
     self.where(:permalink => path).first
   end
 
-
   # -- Instance Methods -----
   alias_method :full_path, :permalink
   alias_method :full_path=, :permalink=
@@ -108,27 +100,6 @@ class Article
   def datetime
     return "" if self.date.nil?
     self.date.iso8601
-  end
-
-  # This returns the associated datetime in words in the format January 06, 2012 at 3pm
-  def status_formatted_date_time
-    self.current_state.formatted_date_time
-  end
-
-  def status_formatted_date_time_with_zone
-    self.current_state.formatted_date_time_with_zone
-  end
-
-  def status_formatted_date
-    self.current_state.formatted_date
-  end
-
-  def status_formatted_time
-    self.current_state.formatted_time
-  end
-
-  def status_formatted_time_zone
-    self.current_state.formatted_time_zone
   end
 
   def date_at_with_time

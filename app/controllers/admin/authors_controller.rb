@@ -27,20 +27,15 @@ class Admin::AuthorsController < AdminBaseController
 
   # POST /admin/authors
   def create
-    created_updated_by_for @author
-    @author.site = @current_site
-    if @author.save
-      flash[:notice] = "Successfully created the author #{@author.full_name}"
-    end
+    @author.image = File.open("#{Rails.root}/app/assets/images/blank-person.jpg") if params[:author][:image].nil?
+    save_and_assign_notice(@author, "Successfully created the author #{@author.full_name}")
     respond_with(:admin, @author, :location => [:admin, :authors])
   end
-
+  
   # PUT /admin/authors/1
   def update
-    @author.updated_by = @current_admin_user
-    if @author.update_attributes(params[:author])
-      flash[:notice] = "Successfully updated the author #{@author.full_name}"
-    end
+    assign_updated_by @author
+    update_and_assign_notice(@author, params[:author], "Successfully updated the author", :full_name)
     respond_with(:admin, @author, :location => [:admin, :authors])
   end
 
@@ -51,24 +46,5 @@ class Admin::AuthorsController < AdminBaseController
     end
     respond_with(:admin, @author, :location => [:admin, :authors])
   end
-
-  private
-
-    def change_name_md5
-      @author.name = params[:author][:name]
-      if @author.name_changed?
-        old_name_split = @author.filename_md5_was.split('-')
-        hash_ext = old_name_split.pop
-        hash = hash_ext.split('.').shift
-        @author.filename_md5 = "#{@author.name.split('.').first}-#{hash}.#{@author.asset.file.extension}"
-        generate_paths
-      end
-    end
-
-    def generate_paths
-      @author.file_path_md5 = File.join(Rails.root, 'public', @author.asset.store_dir, '/', @author.filename_md5)
-      @author.url_md5 = "/#{@author.asset.store_dir}/#{@author.filename_md5}"
-      @author.file_path_md5_old = @author.file_path_md5_was if @author.file_path_md5_changed?
-    end
 
 end

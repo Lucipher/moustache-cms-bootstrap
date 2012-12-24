@@ -13,7 +13,7 @@ describe ThemeAsset do
     @theme_collection = theme_collection
     theme_collection.theme_assets << @theme_asset_image = FactoryGirl.build(:theme_asset, :name => "image", :asset => AssetFixtureHelper.open("rails.png"), :content_type => "image/png", :creator_id => user.id, :updator_id => user.id)
     theme_collection.theme_assets << @theme_asset_css = FactoryGirl.build(:theme_asset, :name => "css",  :asset => AssetFixtureHelper.open("theme_css.css"), :content_type => "text/css", :creator_id => user.id, :updator_id => user.id)
-    theme_collection.theme_assets << @theme_asset_js = FactoryGirl.build(:theme_asset, :name => "js", :asset => AssetFixtureHelper.open("theme_js.js"), :creator_id => user.id, :updator_id => user.id)
+    theme_collection.theme_assets << @theme_asset_js = FactoryGirl.build(:theme_asset, :name => "js", :asset => AssetFixtureHelper.open("theme_js.js"), :creator_id => user.id, :updator_id => user.id, :content_type => 'text/javascript')
     theme_collection.theme_assets << @theme_asset_type = FactoryGirl.build(:theme_asset, :name => "other", :asset => AssetFixtureHelper.open("Inconsolata.otf"), :content_type => "application/octet-stream", :creator_id => user.id, :updator_id => user.id)
 
   end
@@ -37,42 +37,8 @@ describe ThemeAsset do
      it "should be valid" do
        @theme_asset_image.should be_valid
      end    
+   end
      
-     it "should not be valid without a name" do
-       @theme_asset_image.name = nil
-       @theme_asset_image.should_not be_valid
-     end
-
-     it "should not be valid without a asset file" do
-       @theme_asset_js.remove_asset!
-       @theme_asset_js.should_not be_valid
-     end
-   end
-   
-   # -- Callbacks -----------
-   describe "before_save" do
-     describe "#update_asset_attributes" do
-       it "should set the size of the file" do
-         @theme_asset_image.file_size.should == 6646
-       end  
-
-       it "should set the file content_type" do   
-         @theme_asset_image.content_type.should == "image/png"         
-       end
-     end
-   end
-
-   describe "before_update" do
-     describe "#recreate" do
-       it "should update the filename and recreate version when a new name is given" do
-         asset = theme_collection.theme_assets.where(:name => "image").first
-         asset.name = "new_name"
-         asset.save
-         asset = theme_collection.theme_assets.where(:name => "new_name").first
-       end  
-     end
-   end
-   
    # -- Scopes ------------------------------------------------------
    describe "scopes" do
      describe "css_files" do
@@ -149,16 +115,6 @@ describe ThemeAsset do
    
    # -- Instance Methods ----------
    describe "Instance Methods" do
-     describe "#image?" do
-       it "should return true that the theme_asset is an image" do
-         @theme_asset_image.should be_image
-       end     
-       
-       it "should return false when the site_asset is not an image" do  
-          @theme_asset_css.image?.should be_false
-       end  
-     end 
-     
      describe "#update_file_content" do
        it "should return when true when saving the updated file content" do
           @theme_asset_css.update_file_content("hello, world").should be_true

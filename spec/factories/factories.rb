@@ -116,11 +116,15 @@ FactoryGirl.define do
     after(:build) { |author| assign_created_updated_by(author, :authors) }
   end
 
-  factory :article_collection do 
+  factory :moustache_collection do
     association :site, strategy: :build
     sequence(:name) { |n| "name_#{n}" }
+  end
+
+  factory :article_collection, parent: :moustache_collection, class: ArticleCollection do 
     editors {[ FactoryGirl.build(:user) ]}
     permalink_prefix false
+    association :layout, strategy: :build
     after(:build) { |article_collection| assign_created_updated_by(article_collection, :article_collections) }
   end
 
@@ -130,31 +134,26 @@ FactoryGirl.define do
     subheading 'subheading'  
     sequence(:slug) { |n| "slug_#{n}" }
     tag_list "article"
-    layout { FactoryGirl.build(:layout, site_id: "#{site.id}") }
     current_state { FactoryGirl.build(:current_state) }
     meta_tags { set_meta_tags('article') }
     content "article content"
     authors { [FactoryGirl.build(:user, site_id: "#{site.id}")] }
-    filter_name "published"
+    filter_name "html"
     article_collection { FactoryGirl.build(:article_collection, site_id: "#{site.id}") }
     after(:build) { |article| assign_created_updated_by(article, :articles) }
   end
 
-  factory :asset_collection do 
-    association :site, strategy: :build
-    sequence(:name) { |n| "name_#{n}" }
-    site_assets { [ FactoryGirl.build(:site_asset) ] }
-    after(:build) { |asset_collection| assign_created_updated_by(asset_collection, :asset_collections) }
-  end
-
-  factory :site_asset do 
-    name "asset_name"
-    content_type "content_type"
+  factory :moustache_asset do
+    name "asset_name.png"
     asset { File.open("#{Rails.root}/spec/fixtures/assets/rails.png") }
     width 200
     height 200
     file_size 200
-    tag_list "site asset"
+  end
+
+  factory :asset_collection, parent: :moustache_collection, class: AssetCollection do 
+    site_assets { [ FactoryGirl.build(:site_asset) ] }
+    after(:build) { |asset_collection| assign_created_updated_by(asset_collection, :asset_collections) }
   end
 
   factory :custom_field do 
@@ -162,20 +161,14 @@ FactoryGirl.define do
     content "tag attribute value"
   end
 
-  factory :theme_asset do 
-    name "asset_name"
-    content_type "content_type"
-    asset { File.open("#{Rails.root}/spec/fixtures/assets/rails.png") }
-    width 200
-    height 200
-    file_size 200
-    creator_id { FactoryGirl.build(:user).id }
-    updator_id { FactoryGirl.build(:user).id }
+  factory :site_asset, class: SiteAsset, parent: :moustache_asset do 
+    tag_list "site asset"
   end
 
-  factory :theme_collection do 
-    association :site, strategy: :build
-    sequence(:name) { |n| "name_#{n}" }
+  factory :theme_asset, class: ThemeAsset, parent: :moustache_asset do 
+  end
+
+  factory :theme_collection, parent: :moustache_collection, class: ThemeCollection  do 
     after(:build) { |theme_collection| assign_created_updated_by(theme_collection, :theme_collections) }
   end
 end

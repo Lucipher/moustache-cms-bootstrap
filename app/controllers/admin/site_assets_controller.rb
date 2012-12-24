@@ -35,17 +35,15 @@ class Admin::SiteAssetsController < AdminBaseController
     process_create_params
     creator_updator_set_id @site_asset    
     @site_asset.asset = params[:file]
-    respond_with(:admin, @asset_collection, @site_asset) do |format|
-      if @site_asset.save
-        format.html { redirect_to [:admin, @asset_collection, :site_assets], :notice => "Successfully created the asset #{@site_asset.name}" }
-      end
+    asset_create_respond_with(@asset_collection, @site_asset, :site_assets) do
+      "Successfully created the site asset #{@site_asset.name}"
     end
   end
 
   # PUT /admin/asset_collections/id/site_assets/1
   def update
     @site_asset.updator_id = current_admin_user.id
-    change_name_md5
+    change_name_md5(@site_asset, params[:site_asset][:name])
     respond_with(:admin, @asset_collection, @site_asset) do |format|
       if @site_asset.update_attributes(params[:site_asset])
         format.html { redirect_to [:admin, @asset_collection, :site_assets], :notice => "Successfully updated the asset #{@site_asset.name}" }
@@ -61,12 +59,7 @@ class Admin::SiteAssetsController < AdminBaseController
   end
 
   private
-    def try_site_asset_cache                                                                  
-      if !params[:site_asset][:asset_cache].empty? && params[:site_asset][:asset].nil?
-        set_from_cache(:cache_name => params[:site_asset][:asset_cache], :asset => @site_asset) 
-      end
-    end 
-    
+   
     def process_name(original_filename)
       @site_asset.name = original_filename
     end
@@ -74,26 +67,7 @@ class Admin::SiteAssetsController < AdminBaseController
     def process_create_params
       if params[:site_asset].nil?
         process_name(params[:name])
-      else
-        try_site_asset_cache
-        process_name(params[:site_asset][:name])
       end
     end
 
-    def change_name_md5
-      @site_asset.name = params[:site_asset][:name]
-      if @site_asset.name_changed?
-        old_name_split = @site_asset.filename_md5_was.split('-')
-        hash_ext = old_name_split.pop
-        hash = hash_ext.split('.').shift
-        @site_asset.filename_md5 = "#{@site_asset.name}-#{hash}.#{@site_asset.asset.file.extension}"
-        generate_paths
-      end
-    end
-
-    def generate_paths
-      @site_asset.file_path_md5 = File.join(Rails.root, 'public', @site_asset.asset.store_dir, '/', @site_asset.filename_md5)
-      @site_asset.url_md5 = "/#{@site_asset.asset.store_dir}/#{@site_asset.filename_md5}"
-      @site_asset.file_path_md5_old = @site_asset.file_path_md5_was if @site_asset.file_path_md5_changed?
-    end
 end

@@ -1,40 +1,21 @@
-class ArticleCollection
-  include Mongoid::Document
-  include Mongoid::Timestamps
+class ArticleCollection < MoustacheCollection::Metal
 
-  include MoustacheCms::FriendlyFilename
-
-  attr_accessible :name,
-                  :layout_id,
+  attr_accessible :layout_id,
                   :editor_ids,
-                  :permalink_prefix
+                  :permalink_prefix,
+                  :commentable
 
     # -- Fields --------------- 
-  field :name
   field :permalink_prefix, :type => Boolean, :default => false
+  field :commentable, type: Boolean, default:  true
+  
+  validates :layout_id, presence: true
   
   # -- Associations -------------
-  belongs_to :site
   belongs_to :layout
-  belongs_to :created_by, :class_name => "User", :inverse_of => :article_collections_created
-  belongs_to :updated_by, :class_name => "User", :inverse_of => :article_collections_updated
+  created_updated(:article_collections)
   has_many :articles
   has_and_belongs_to_many :editors, :class_name => "User", :inverse_of => :article_collections
-
-  # -- Validations -------
-  validates :name,
-            :presence => true,
-            :uniqueness => { :scope => :site_id }
-
-  validates :site_id,
-            :presence => true
-
-  validates :created_by_id,
-            :presence => true
-
-  validates :updated_by_id,
-            :presence => true
-
 
   # -- Class Methods --
   def self.articles_by_collection_name(name)

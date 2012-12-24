@@ -59,9 +59,9 @@ module Admin::PagesHelper
 
   def page_classes(page)
     if page.published?
-      page.home_page? ? 'home_page published' : 'published'
+      page.homepage? ? 'homepage published' : 'published'
     elsif page.draft?
-      page.home_page? ? 'home_page draft' : 'draft'
+      page.homepage? ? 'homepage draft' : 'draft'
     end
   end
 
@@ -120,15 +120,29 @@ module Admin::PagesHelper
 
   def page_part_selected(page_part)
     unless @page.new_record?
-      if @selected_page_part.id == page_part.id
-        content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab active' do
-          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
-        end
-      else
-        content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab' do
-          link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
-        end
+# <<<<<<< HEAD
+#       if @selected_page_part.id == page_part.id
+#         content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab active' do
+#           link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
+#         end
+#       else
+#         content_tag :li, :id => "#{page_part.id}_nav", :class => 'tab' do
+#           link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true, :data => { :toggle => "tab", :target => "#{page_part.id}" }
+#         end
+# =======
+      css_class = tab_css_class(page_part)
+      content_tag :li, :id => "#{page_part.id}_nav", :class => css_class do
+        link_to page_part.name, edit_admin_page_page_part_path(@page, page_part.id, :view => page_part.id), :remote => true
+# >>>>>>> upstream/master
       end
+    end
+  end
+
+  def tab_css_class(page_part)
+    if @selected_page_part.id == page_part.id
+      'tab selected'
+    else
+      'tab'
     end
   end
 

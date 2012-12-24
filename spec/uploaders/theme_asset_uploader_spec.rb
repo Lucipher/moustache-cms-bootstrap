@@ -9,10 +9,10 @@ describe ThemeAssetUploader do
   let(:theme_collection) { FactoryGirl.create(:theme_collection, :site => site) }
   
   before do
-    theme_collection.theme_assets << @theme_asset = FactoryGirl.build(:theme_asset, :name => "foobar") 
-    theme_collection.theme_assets << @theme_asset_css = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("theme_css.css")) 
-    theme_collection.theme_assets << @theme_asset_js = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("theme_js.js")) 
-    theme_collection.theme_assets << @theme_asset_otf = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("Inconsolata.otf"))
+    theme_collection.theme_assets << @theme_asset = FactoryGirl.build(:theme_asset, :name => "foobar", content_type: 'png/image') 
+    theme_collection.theme_assets << @theme_asset_css = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("theme_css.css"), content_type: 'text/css') 
+    theme_collection.theme_assets << @theme_asset_js = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("theme_js.js"), content_type: 'text/javascript') 
+    theme_collection.theme_assets << @theme_asset_otf = FactoryGirl.build(:theme_asset, :name => "foobar", :asset => AssetFixtureHelper.open("Inconsolata.otf"), content_type: 'application/x-font-opentype')
     
     ThemeAssetUploader.enable_processing = true
     @uploader = ThemeAssetUploader.new(@theme_asset, :asset)
@@ -25,41 +25,34 @@ describe ThemeAssetUploader do
     @uploader_otf.store!(AssetFixtureHelper.open("Inconsolata.otf"))
   end
   
-  after do
+  after(:each) do
     ThemeAssetUploader.enable_processing = false
-    FileUtils.rm_rf(File.join(Rails.root, 'public', 'theme_assets', @uploader.model._parent.site_id.to_s))
+    FileUtils.rm_rf(File.join(Rails.root, 'public', 'theme_assets', theme_collection.site_id.to_s))
   end  
-  
-  describe "before_filer" do
-    describe "#remember_cache_id" do
-      it "should assign file cache_id" do
-        @uploader.instance_variable_get(:@cache_id_was).should_not be_nil
-      end  
-    end                    
-  end                                                                  
-       
-  describe "after_filter" do
-    describe "delete_tmp_dir" do
-      it "should delete the tmp directory" do     
-        File.exist?(File.join(Rails.root, "spec", "tmp", @uploader.cache_dir, @uploader.instance_variable_get(:@cache_id_was))).should be_false
-      end
-    end  
-  end                   
-  
-  it "should change the uploaded filename to the name of the theme_asset" do
-    @uploader.filename.should =~  /^foobar.png$/
-  end
   
   it "should white list these extenstiosn" do
     @uploader.extension_white_list.should == %w(jpg jpeg gif png css js swf flv eot svg ttf woff otf ico pdf mp4 m4v ogv webm flv)
   end       
-  
-  it "should return true when the file is an image" do
-    @uploader.image?(@uploader.file).should be_true
+ 
+  describe "set the directory asset type for storing the file in" do
+    it "should return images if the file is an image file" do
+      @uploader.asset_type.should == 'images'
+    end
+
+    it "should return javascripts if the file is a javascript file" do
+      @uploader_js.asset_type.should == 'javascripts'
+    end
+
+    it "should return stylesheets if the file is a css file" do
+      @uploader_css.asset_type.should == 'stylesheets'
+    end
+
+    it "should return assets fi the file is not a image, javascript or css file" do
+      @uploader_otf.asset_type.should == 'assets'
+    end
   end
   
   describe "storeage paths" do
-   
     it "should set the storage directory to image for image files" do
       @uploader.store_dir.should == "theme_assets/#{@uploader.model._parent.site_id}/#{@uploader.model._parent.name}/images"
     end

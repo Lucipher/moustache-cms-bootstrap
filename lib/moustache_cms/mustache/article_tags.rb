@@ -1,32 +1,100 @@
+require 'builder'
+
 module MoustacheCms
   module Mustache
     module ArticleTags
+
+      # This tag will render a page part named either '_articles' or '_article'. This allows you to render a page either as the collection of articles or an article with the permalink.
+      def articles_or_article
+        part = @article.nil? ? @page.page_parts.where(name: '_articles').first : @page.page_parts.where(name: '_article').first
+        process_with_filter(part)
+      end
 
       # This tag will display the list of articles paginated. From within the paginated list you can
       # access all the properties of an article to display in your view. Using this tag will only show
       # the paginated list of articles so you will also want to define an {{ article }} 
       # You will most likely want to use this tag in conjunction with the
       # {{{paginate_articles}}} tag
-      def articles_list_for(name)
-        if @article.nil?
-          find_articles(name) 
-          articles_to_list
+      def articles_for(name)
+        find_articles(name) 
+        articles_to_list
+      end
+
+      # This tag will find the page part named feed and process it 
+      def feed_for(name)
+        find_articles(name) 
+        articles_to_list
+        feed = @page.page_parts.where(name: 'feed').first
+        process_with_filter(feed)    
+      end
+
+      # Returns the latest updated at date in xmlschema format for the articles that are published .
+      def feed_updated
+        @articles_published.first.updated_at.xmlschema if @articles_published.length > 0
+      end
+
+      # Renders the form for comments
+      def form_for_comment
+        lambda do |text|
+          if @article.commentable
+            hash = parse_text(text) 
+            options = { 'id' => nil, 'class' => nil }.merge(hash)
+            engine = gen_haml('form_for_comment.haml')
+            engine.render(action_view_context, {article: @article, comment: Comment.new, options: options, :@controller => @controller})
+          else
+            false
+          end
         end
       end
 
-      # You will use a list of articles for the collection or it will return a single article
-      # if the url matches a permalink in your collection. This tag will be usefull if you display your 
-      # articles the same as in the list view and the permalink view. If you want to display your articles
-      # between the paginated list of articles and an individual artcile then you will want to use the 
-      # You will most likely want to use this tag in conjunction with the
-      # {{{paginate_articles}}} tag
-      def articles_for(name)
-        @article.nil? ? find_articles(name) : (@articles = [@article])
-        articles_to_list
+      # Renders comments if they are on for the article
+      def comments
+        @article.commentable ? @article.comments : false
+      end
+
+      # returns error messages for the comment form
+      def error_messages
+        unless @comment.nil?
+          engine = gen_haml('error_messages.haml')
+          engine.render(action_view_context, {target: @comment, :@controller => @controller})
+        end
+      end
+
+      # Returns a atom feed for the articles published
+      def generate_atom_feed
+        xml = ""
+        builder = Builder::XmlMarkup.new
+        @articles_published.each do |article|
+          content = process_with_filter(article)
+          xml = builder.entry do |b|
+            b.title(type: "html") { |t| t.cdata!(article.title) }
+            b.author { |a| a.name(article.authors.first.full_name) }
+            b.link(rel: 'alternate', type: 'text/html', href: full_request(article.permalink))
+            b.id(full_request(article.permalink))
+            b.updated(article.updated_at.xmlschema)
+            b.published(article.published_on.xmlschema)
+            b.content(type: "html") { |c| c.cdata!(content) }
+          end
+        end
+        { xml: xml }
       end
 
       def article
         @article
+      end
+
+      def articles
+        @articles
+      end
+
+      # returns only the published articles
+      def articles_published
+        @articles_published
+      end
+
+      # process the article contents with the filter
+      def article_content
+        process_with_filter(@article)  
       end
       
       def paginate
@@ -54,16 +122,16 @@ module MoustacheCms
       def page_entries_info
         unless @articles.nil?
           engine = gen_haml('page_entries_info.haml')
-          context = action_view_context(File.join("#{Rails.root}", 'lib', 'moustache_cms', 'mustache', 'templates'))
+          context = action_view_context
           engine.render(context, {:articles => @articles})
         end
       end
 
       def respond_to?(method)
         method_name = method.to_s
-        if method_name =~ /^articles_list_for_(.*)/ && @current_site.article_collection_by_name($1)
+        if method_name =~ /^articles_for_(.*)/ && @current_site.article_collection_by_name($1)
           return true
-        elsif method_name =~ /^articles_for_(.*)/ && @current_site.article_collection_by_name($1)
+        elsif method_name =~ /^feed_for_(.*)/ && @current_site.article_collection_by_name($1)
           return true
         else
           super
@@ -73,9 +141,9 @@ module MoustacheCms
       def method_missing(method, *arguments, &block)
         method_name = method.to_s
         case method_name
-        when /^(articles_list_for)_(.*)/
-          self.class.define_attribute_method(method_name, $1, $2)
         when /^(articles_for)_(.*)/
+          self.class.define_attribute_method(method_name, $1, $2)
+        when /^(feed_for)_(.*)/
           self.class.define_attribute_method(method_name, $1, $2)
         end
 
@@ -92,7 +160,7 @@ module MoustacheCms
         if @article.nil?  
           options = text.nil? ? {} : parse_text(text)
           engine = gen_haml('paginate_articles.haml')
-          context = action_view_context(File.join("#{Rails.root}", 'lib', 'moustache_cms', 'mustache', 'templates'))
+          context = action_view_context
           engine.render(context, {:articles => @articles, :options => options})
         end
       end
@@ -122,31 +190,23 @@ module MoustacheCms
             link_text = 'Previous Page'
           end
           engine = gen_haml('paginate_previous.haml')
-          context = action_view_context(File.join("#{Rails.root}", 'lib', 'moustache_cms', 'mustache', 'templates'))
+          context = action_view_context
           engine.render(context, {:articles => @articles, :link_text => link_text, :options => options})
         end 
       end
 
       def articles_to_list
-        @articles_list = [] 
+        @articles_published = [] 
         @articles.each do |article|
           if article.published?
-            # hash = {}
-            #attrs = self.class.attribute_fields(Article)
-            #attrs.each do |attr_name|
-              # hash[attr_name] = article.send(attr_name)
-            # end
-            # hash['created_by'] = article.created_by.attributes
-            # process_article_with_filter(article, hash)
-            # @articles_list << hash
-            @articles_list << article
+            @articles_published << article
           end
         end
-        @articles_list
+        @articles_published
       end
 
       def find_articles(name)
-        @articles = @current_site.articles_by_collection_name_desc(name.to_s).page(params[:page]).per(MoustacheCms::Application.config.default_per_page)  
+        @articles = @current_site.articles_by_collection_name(name.to_s).desc('current_state.time').page(params[:page]).per(MoustacheCms::Application.config.default_per_page)
       end
 
       def process_article_with_filter(article, hash)
