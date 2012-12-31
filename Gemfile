@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem "rails", "3.2.9"   
-
+gem "thin"
 group :assets do
   gem "sass-rails", "~> 3.2.3"
   gem 'anjlab-bootstrap-rails', '>= 2.1', :require => 'bootstrap-rails'
@@ -48,4 +48,5 @@ group :development, :test do
   gem "guard-rspec"
   gem "guard-spork"
   gem "guard-pow"
+  gem 'meta_request', '0.2.0'
 end
